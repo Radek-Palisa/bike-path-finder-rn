@@ -20,17 +20,12 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "env": {
-    "node": true,
-    "browser": true,
-    "jasmine": true,
-    "jest": true
-  },
   "rules": {
     "prettier/prettier": [
       "error",
       {
-        "singleQuote": true
+        "singleQuote": true,
+        "arrowParens": "avoid"
       }
     ],
     "@typescript-eslint/explicit-function-return-type": 0,

@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "bike-path-finder-rn",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
@@ -8,7 +9,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "start:debug": "REACT_DEBUGGER=\"unset ELECTRON_RUN_AS_NODE && open -g 'rndebugger://set-debugger-loc?port=19000' ||\" npm start"
+    "start:debug": "REACT_DEBUGGER=\"unset ELECTRON_RUN_AS_NODE && open -g 'rndebugger://set-debugger-loc?port=19000' ||\" npm start",
+    "prepare": "husky install",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "expo": "~44.0.0",
@@ -30,8 +33,9 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.3",
     "prettier": "^2.5.1",
     "typescript": "~4.5.4"
-  },
-  "private": true
+  }
 }
