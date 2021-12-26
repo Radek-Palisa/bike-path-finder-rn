@@ -1,49 +1,5 @@
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
-import { useEffect, useState } from 'react';
+import Map from './src/scenes/Map/Map';
 
 export default function App() {
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync({});
-
-      setLocation(location);
-    })();
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      <MapView
-        provider={PROVIDER_GOOGLE}
-        style={styles.map}
-        showsUserLocation
-        showsMyLocationButton
-      />
-    </View>
-  );
+  return <Map />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
