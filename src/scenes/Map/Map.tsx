@@ -1,20 +1,40 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import type { LatLng } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
 import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
-import useMyLocation from './services/useMyLocation';
+import getMyLocation from './services/getMyLocation';
 import MyLocationMarker from './components/MyLocationMarker';
-import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import StationMarkers from './components/StationMarkers';
+import { StationsInfo } from './services/types';
+import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 
 export default function Map() {
   const map = useRef<MapView | null>(null);
+  const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
-  const myLocation = useMyLocation();
-  const bikeStationsInfo = useGetBikeStationsInfo();
+  const [myLocation, setMyLocation] = useState<LatLng | null>(null);
+  const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
+    null
+  );
+
+  useEffect(() => {
+    console.log('=========== 1 ===========', new Date());
+    console.log('myLocation', myLocation);
+    console.log('bikeStationsInfo', bikeStationsInfo?.size);
+  }, [myLocation, bikeStationsInfo]);
+
+  useEffect(() => {
+    const myLocation = getMyLocation().then(location => {
+      setMyLocation(location);
+      return location;
+    });
+    getBikeStationsInfo(myLocation)
+      .then(({ stationsInfo }) => setBikeStationsInfo(stationsInfo))
+      .catch(e => alert(`Error: ${e.message}`));
+  }, []);
 
   const handleFindMyLocationPress = () => {
     if (!myLocation) return;
