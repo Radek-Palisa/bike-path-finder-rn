@@ -1,10 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import sampleDataStationsInfo from '../../../../sample-data/stations-info.json';
+// import sampleDataStationsInfo from '../../../../sample-data/stations-info.json';
 import sampleDataStationsStatus from '../../../../sample-data/stations-status.json';
-import {
-  BicingApiStationsInfoResponse,
-  GeoJsonFeatureCollection,
-} from './types';
+import { BicingApiStationsInfoResponse, StationsInfo } from './types';
 
 function asyncStorageGetStationsInfoLastFetch() {
   return AsyncStorage.getItem('stationsInfoLastFetch');
@@ -17,15 +14,16 @@ function asyncStorageSetStationsInfoLastFetch(
 }
 
 function asyncStorageSetStationsInfo(
-  stationsInfo: GeoJsonFeatureCollection
+  stationsInfo: StationsInfo
 ): Promise<void> {
-  return AsyncStorage.setItem('stationsInfo', JSON.stringify(stationsInfo));
+  const serialized = JSON.stringify(Array.from(stationsInfo.entries()));
+  return AsyncStorage.setItem('stationsInfo', serialized);
 }
 
-function asyncStorageGetStationsInfo(): Promise<GeoJsonFeatureCollection | null> {
-  return AsyncStorage.getItem('stationsInfo').then(stationsInfo =>
-    stationsInfo ? JSON.parse(stationsInfo) : null
-  );
+function asyncStorageGetStationsInfo(): Promise<StationsInfo | null> {
+  return AsyncStorage.getItem('stationsInfo').then(stationsInfoRaw => {
+    return stationsInfoRaw ? new Map(JSON.parse(stationsInfoRaw)) : null;
+  });
 }
 
 function isOlderThanDays(dateString: string, days: number) {
@@ -33,26 +31,25 @@ function isOlderThanDays(dateString: string, days: number) {
   return diff > days * 24 * 60 * 60 * 1000;
 }
 
-function mapBicingStationsInfoToGeoJson(
+function mapBicingStationsInfo(
   rawData: BicingApiStationsInfoResponse
-): GeoJsonFeatureCollection {
-  return {
-    type: 'FeatureCollection',
-    features: rawData.data.stations.map(
-      ({ station_id, capacity, lat, lon }) => ({
-        id: station_id,
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [lon, lat],
+): StationsInfo {
+  return new Map(
+    rawData.data.stations.map(({ station_id, capacity, lat, lon }) => [
+      station_id,
+      {
+        coordinate: {
+          longitude: lon,
+          latitude: lat,
         },
-        properties: {
-          capacity,
-          shouldShowStatus: false,
-        },
-      })
-    ),
-  };
+        capacity,
+        shouldShowStatus: false,
+        availableMechanical: 0,
+        availableElectric: 0,
+        availableDocks: 0,
+      },
+    ])
+  );
 }
 
 function fetchBicingStationsInfo(): Promise<BicingApiStationsInfoResponse> {
@@ -71,7 +68,7 @@ export function fetchBicingStationsStatus() {
   return Promise.resolve(sampleDataStationsStatus);
 }
 
-export async function getBicingStationsGeoData(): Promise<GeoJsonFeatureCollection> {
+export async function getBikeStationsInfo(): Promise<StationsInfo> {
   const stationsInfoLastFetch =
     await asyncStorageGetStationsInfoLastFetch().catch(e => alert(e.message));
 
@@ -93,7 +90,7 @@ export async function getBicingStationsGeoData(): Promise<GeoJsonFeatureCollecti
 
   const bicingStationsData = await fetchBicingStationsInfo();
 
-  const mappedData = mapBicingStationsInfoToGeoJson(bicingStationsData);
+  const mappedData = mapBicingStationsInfo(bicingStationsData);
 
   asyncStorageSetStationsInfo(mappedData).catch(e => alert(e.message));
 

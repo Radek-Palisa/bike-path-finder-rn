@@ -1,24 +1,19 @@
 import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Marker } from 'react-native-maps';
-import { GeoJsonFeatureCollection } from '../services/types';
+import { StationsInfo } from '../services/types';
 import BikeStationIcon from '../../../components/icons/BikeStationIcon';
+
 type Props = {
-  data: GeoJsonFeatureCollection;
+  data: StationsInfo;
 };
 
 export default memo(function StationMarkers({ data }: Props) {
   return (
     <>
-      {data.features.map(({ id, geometry, properties }) => (
-        <Marker
-          key={id}
-          coordinate={{
-            longitude: geometry.coordinates[0],
-            latitude: geometry.coordinates[1],
-          }}
-        >
-          {properties.shouldShowStatus ? (
+      {[...data].map(([stationId, { coordinate, shouldShowStatus }]) => (
+        <Marker key={stationId} coordinate={coordinate}>
+          {shouldShowStatus ? (
             <BikeStationIcon fillPercentage={0.5} />
           ) : (
             <View style={styles.container} />

@@ -1,18 +1,15 @@
-export type GeoJsonFeature = {
-  type: 'Feature';
-  geometry: {
-    type: 'Point';
-    coordinates: [longitude: number, latitude: number];
-  };
-  properties: { [key: string]: any };
-  /** id not part of GeoJson spec but works with google maps */
-  id?: number;
+import { LatLng } from 'react-native-maps';
+
+export type StationStatus = {
+  coordinate: LatLng;
+  capacity: number;
+  shouldShowStatus: boolean;
+  availableMechanical: number;
+  availableElectric: number;
+  availableDocks: number;
 };
 
-export type GeoJsonFeatureCollection = {
-  type: 'FeatureCollection';
-  features: Array<GeoJsonFeature>;
-};
+export type StationsInfo = Map<number, StationStatus>;
 
 export type BicingApiStationsInfoResponse = {
   last_updated: number;

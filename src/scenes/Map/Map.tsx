@@ -7,14 +7,14 @@ import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
 import useMyLocation from './services/useMyLocation';
 import MyLocationMarker from './components/MyLocationMarker';
-import useGetBicingStationsGeoData from './services/useGetBicingStationsGeoData';
+import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import StationMarkers from './components/StationMarkers';
 
 export default function Map() {
   const map = useRef<MapView | null>(null);
   const [destination, setDestination] = useState<LatLng | null>(null);
   const myLocation = useMyLocation();
-  const bicingStationsGeoData = useGetBicingStationsGeoData();
+  const bikeStationsInfo = useGetBikeStationsInfo();
 
   const handleFindMyLocationPress = () => {
     if (!myLocation) return;
@@ -39,25 +39,7 @@ export default function Map() {
       >
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
-        {/* {bicingStationsGeoData && (
-          <Geojson
-            geojson={bicingStationsGeoData}
-            onPress={e => console.log(e)}
-          />
-        )} */}
-        {/* {bicingStationsGeoData &&
-          bicingStationsGeoData.features.map(({ id, geometry }) => (
-            <Marker
-              key={id}
-              coordinate={{
-                longitude: geometry.coordinates[0],
-                latitude: geometry.coordinates[1],
-              }}
-            />
-          ))} */}
-        {bicingStationsGeoData && (
-          <StationMarkers data={bicingStationsGeoData} />
-        )}
+        {bikeStationsInfo && <StationMarkers data={bikeStationsInfo} />}
       </MapView>
       <BottomPanel isActivated={Boolean(destination)}>
         <View style={styles.findMyLocationWrapper}>
