@@ -21,12 +21,6 @@ export default function Map() {
   );
 
   useEffect(() => {
-    console.log('=========== 1 ===========', new Date());
-    console.log('myLocation', myLocation);
-    console.log('bikeStationsInfo', bikeStationsInfo?.size);
-  }, [myLocation, bikeStationsInfo]);
-
-  useEffect(() => {
     const myLocation = getMyLocation().then(location => {
       setMyLocation(location);
       return location;

@@ -32,13 +32,3 @@ export default function calculateDistance(
 
   return distance; // in meters
 }
-
-export function isWithinDistance(
-  distanceInMeters: number,
-  origin: LatLng,
-  destination: LatLng
-) {
-  const distance = calculateDistance(origin, destination);
-
-  return distance <= distanceInMeters;
-}
