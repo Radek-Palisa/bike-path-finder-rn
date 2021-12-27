@@ -11,6 +11,8 @@ import StationMarkers from './components/StationMarkers';
 import { StationsInfo, StationStatus } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findAndUpdateNearStations } from './services/nearStations';
+import DirectionsPolyline from './components/DirectionsPolyline';
+import type { DirectionParams } from './components/DirectionsPolyline';
 
 export default function MapScene() {
   const map = useRef<MapView | null>(null);
@@ -22,7 +24,8 @@ export default function MapScene() {
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
     null
   );
-  const [directionParams, setDirectionParams] = useState<any | null>(null);
+  const [directionParams, setDirectionParams] =
+    useState<DirectionParams | null>(null);
 
   useEffect(() => {
     const myLocation = getMyLocation().then(location => {
@@ -71,12 +74,10 @@ export default function MapScene() {
 
     setDirectionParams({
       origin: myLocation,
-      originStation: stationsNearOrigin.current[0],
+      originStation: stationsNearOrigin.current[0].coordinate,
       destination,
-      destinationStation: stationsNearDestinaion.current[0],
+      destinationStation: stationsNearDestinaion.current[0].coordinate,
     });
-
-    alert('Directions');
   };
 
   return (
@@ -91,6 +92,7 @@ export default function MapScene() {
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
         {bikeStationsInfo && <StationMarkers data={bikeStationsInfo} />}
+        <DirectionsPolyline directionParams={directionParams} />
       </MapView>
       <BottomPanel isActivated={Boolean(destination)}>
         <View style={styles.findMyLocationWrapper}>
