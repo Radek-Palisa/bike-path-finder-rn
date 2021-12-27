@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import type { LatLng } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
@@ -8,17 +8,21 @@ import FindMyLocationButton from './components/FindMyLocationButton';
 import getMyLocation from './services/getMyLocation';
 import MyLocationMarker from './components/MyLocationMarker';
 import StationMarkers from './components/StationMarkers';
-import { StationsInfo } from './services/types';
+import { StationsInfo, StationStatus } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
+import { findAndUpdateNearStations } from './services/nearStations';
 
-export default function Map() {
+export default function MapScene() {
   const map = useRef<MapView | null>(null);
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
+  const stationsNearOrigin = useRef<StationStatus[] | null>(null);
+  const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
     null
   );
+  const [directionParams, setDirectionParams] = useState<any | null>(null);
 
   useEffect(() => {
     const myLocation = getMyLocation().then(location => {
@@ -26,9 +30,25 @@ export default function Map() {
       return location;
     });
     getBikeStationsInfo(myLocation)
-      .then(({ stationsInfo }) => setBikeStationsInfo(stationsInfo))
-      .catch(e => alert(`Error: ${e.message}`));
+      .then(({ stationsInfo, nearStations }) => {
+        stationsNearOrigin.current = nearStations;
+        setBikeStationsInfo(stationsInfo);
+      })
+      .catch(e => Alert.alert('Error', e.message));
   }, []);
+
+  useEffect(() => {
+    if (!destination) return;
+
+    setBikeStationsInfo(bikeStationsInfo => {
+      const { updatedStationsInfo, nearStations } = findAndUpdateNearStations(
+        bikeStationsInfo,
+        destination
+      );
+      stationsNearDestinaion.current = nearStations;
+      return updatedStationsInfo;
+    });
+  }, [destination, setBikeStationsInfo]);
 
   const handleFindMyLocationPress = () => {
     if (!myLocation) return;
@@ -39,6 +59,23 @@ export default function Map() {
   };
 
   const handleDirectionsPress = () => {
+    if (
+      !myLocation ||
+      !destination ||
+      !stationsNearOrigin.current ||
+      !stationsNearDestinaion.current
+    ) {
+      Alert.alert('Error', 'Missing direction parameters');
+      return;
+    }
+
+    setDirectionParams({
+      origin: myLocation,
+      originStation: stationsNearOrigin.current[0],
+      destination,
+      destinationStation: stationsNearDestinaion.current[0],
+    });
+
     alert('Directions');
   };
 
