@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import type { LatLng } from 'react-native-maps';
@@ -53,6 +53,19 @@ export default function MapScene() {
     });
   }, [destination, setBikeStationsInfo]);
 
+  const handleMapPress = useCallback(() => {
+    if (directionParams) return;
+    setDestination(null);
+  }, [directionParams, setDestination]);
+
+  const handleMapLongPress = useCallback(
+    e => {
+      if (directionParams) return;
+      setDestination(e.nativeEvent.coordinate);
+    },
+    [directionParams, setDestination]
+  );
+
   const handleFindMyLocationPress = () => {
     if (!myLocation) return;
     map.current?.animateCamera({
@@ -86,8 +99,8 @@ export default function MapScene() {
         ref={map}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        onLongPress={e => setDestination(e.nativeEvent.coordinate)}
-        onPress={() => setDestination(null)}
+        onLongPress={handleMapLongPress}
+        onPress={handleMapPress}
       >
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}

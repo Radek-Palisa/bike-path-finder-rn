@@ -1,5 +1,12 @@
 import { LatLng } from 'react-native-maps';
 
+export type Route = {
+  polylineCoordinates: LatLng[];
+  bounds: google.maps.LatLngBounds;
+  distance: google.maps.Distance | undefined;
+  duration: google.maps.Duration | undefined;
+};
+
 export type StationStatus = {
   coordinate: LatLng;
   capacity: number;
