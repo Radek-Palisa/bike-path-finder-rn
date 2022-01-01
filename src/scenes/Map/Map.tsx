@@ -3,15 +3,18 @@ import { StyleSheet, View, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import type { LatLng } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
+import DirectionsPanelMenu from './components/DirectionsPanelMenu';
 import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
 import getMyLocation from './services/getMyLocation';
 import MyLocationMarker from './components/MyLocationMarker';
 import StationMarkers from './components/StationMarkers';
-import { StationsInfo, StationStatus } from './services/types';
+import { DirectionsState, StationsInfo, StationStatus } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findAndUpdateNearStations } from './services/nearStations';
-import DirectionsPolyline from './components/DirectionsPolyline';
+import DirectionsPolyline, {
+  DirectionsOnChangeEvent,
+} from './components/DirectionsPolyline';
 import type { DirectionParams } from './components/DirectionsPolyline';
 
 export default function MapScene() {
@@ -19,6 +22,7 @@ export default function MapScene() {
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
+  const [directions, setDirections] = useState<DirectionsState | null>(null);
   const stationsNearOrigin = useRef<StationStatus[] | null>(null);
   const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
@@ -74,6 +78,19 @@ export default function MapScene() {
     });
   };
 
+  const handleDirectionsChange = useCallback(
+    (event: DirectionsOnChangeEvent) => {
+      if (event.state === 'loading') return;
+
+      if (event.state === 'error') {
+        return Alert.alert('Error', event.error.message);
+      }
+
+      setDirections(event.data);
+    },
+    [setDirections]
+  );
+
   const handleDirectionsPress = () => {
     if (
       !myLocation ||
@@ -93,6 +110,10 @@ export default function MapScene() {
     });
   };
 
+  const handleDirectionsClear = () => {
+    setDirectionParams(null);
+  };
+
   return (
     <View style={styles.container}>
       <MapView
@@ -105,34 +126,37 @@ export default function MapScene() {
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
         {bikeStationsInfo && <StationMarkers data={bikeStationsInfo} />}
-        <DirectionsPolyline directionParams={directionParams} />
+        <DirectionsPolyline
+          directionParams={directionParams}
+          onChange={handleDirectionsChange}
+        />
       </MapView>
-      <BottomPanel isActivated={Boolean(destination)}>
-        <View style={styles.findMyLocationWrapper}>
+      <BottomPanel
+        isActivated={Boolean(destination)}
+        afloatContent={
           <FindMyLocationButton onPress={handleFindMyLocationPress} />
-        </View>
-        <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
-      </BottomPanel>
+        }
+        panelContent={
+          directionParams ? (
+            <DirectionsPanelMenu
+              onDirectionsClearPress={handleDirectionsClear}
+              directionsData={directions}
+            />
+          ) : (
+            <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
+          )
+        }
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   map: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
-  },
-  findMyLocationWrapper: {
-    flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 20,
-    paddingRight: 16,
   },
 });

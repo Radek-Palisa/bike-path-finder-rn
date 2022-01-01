@@ -1,5 +1,11 @@
 import { LatLng } from 'react-native-maps';
 
+export type DirectionsState = {
+  walkingToStation: Route;
+  cycling: Route[];
+  walkingToDestination: Route;
+};
+
 export type Route = {
   polylineCoordinates: LatLng[];
   bounds: google.maps.LatLngBounds;
