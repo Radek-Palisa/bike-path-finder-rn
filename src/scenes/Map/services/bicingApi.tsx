@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import sampleDataStationsInfo from '../../../../sample-data/stations-info.json';
+import sampleDataStationsInfo from '../../../../sample-data/stations-info.json';
 import sampleDataStationsStatus from '../../../../sample-data/stations-status.json';
 import { BicingApiStationsInfoResponse, StationsInfo } from './types';
 
@@ -53,12 +53,12 @@ function mapBicingStationsInfo(
 }
 
 function fetchBicingStationsInfo(): Promise<BicingApiStationsInfoResponse> {
-  return fetch(
-    'https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_information'
-  ).then(response => response.json());
-  // return Promise.resolve(
-  //   sampleDataStationsInfo as BicingApiStationsInfoResponse
-  // );
+  // return fetch(
+  //   'https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_information'
+  // ).then(response => response.json());
+  return Promise.resolve(
+    sampleDataStationsInfo as BicingApiStationsInfoResponse
+  );
 }
 
 export function fetchBicingStationsStatus() {
