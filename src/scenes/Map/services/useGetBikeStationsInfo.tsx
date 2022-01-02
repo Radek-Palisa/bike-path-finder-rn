@@ -31,23 +31,28 @@ export default function useGetBikeStationsInfo(): GetBikeStationsInfo {
 
       if (!station) return;
 
+      station.availableElectric = stationData.num_bikes_available_types.ebike;
+      station.availableMechanical =
+        stationData.num_bikes_available_types.mechanical;
+      station.availableDocks = stationData.num_docks_available;
+
       if (resolvedStartLocation) {
         const distance = calculateDistance(
           resolvedStartLocation,
           station.coordinate
         );
 
-        mutateNearStations(nearStations, { distance, station });
+        const hasAvailableBikes =
+          station.availableMechanical > 0 || station.availableElectric > 0;
+
+        if (hasAvailableBikes) {
+          mutateNearStations(nearStations, { distance, station });
+        }
 
         if (distance <= NEAR_STATION_DISTANCE_METERS) {
           station.shouldShowStatus = true;
         }
       }
-
-      station.availableElectric = stationData.num_bikes_available_types.ebike;
-      station.availableMechanical =
-        stationData.num_bikes_available_types.mechanical;
-      station.availableDocks = stationData.num_docks_available;
     });
 
     return {
