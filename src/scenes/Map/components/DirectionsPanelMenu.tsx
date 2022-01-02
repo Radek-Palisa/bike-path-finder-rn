@@ -1,5 +1,6 @@
-import { View, Button, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { DirectionsState } from '../services/types';
+import CancelDirectionsButton from './CancelDirectionsButton';
 
 type Props = {
   onDirectionsClearPress: () => void;
@@ -12,7 +13,7 @@ export default function DirectionsPanelMenu({
 }: Props) {
   return (
     <View>
-      <Button title="Cancel" onPress={onDirectionsClearPress} />
+      <CancelDirectionsButton onPress={onDirectionsClearPress} />
       {directionsData && (
         <Text>
           {directionsData.walkingToStation.duration?.text} -{' '}
