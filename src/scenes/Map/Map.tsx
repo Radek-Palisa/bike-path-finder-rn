@@ -3,7 +3,7 @@ import { StyleSheet, View, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import type { LatLng } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
-import DirectionsPanelMenu from './components/DirectionsPanelMenu';
+import DirectionsInfo from './components/DirectionsInfo';
 import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
 import getMyLocation from './services/getMyLocation';
@@ -139,7 +139,7 @@ export default function MapScene() {
         }
         panelContent={
           directionParams ? (
-            <DirectionsPanelMenu
+            <DirectionsInfo
               onDirectionsClearPress={handleDirectionsClear}
               directionsData={directions}
             />

@@ -9,7 +9,7 @@ type Props = {
   directionsData: Directions | null;
 };
 
-export default function DirectionsPanelMenu({
+export default function DirectionsInfo({
   onDirectionsClearPress,
   directionsData,
 }: Props) {
