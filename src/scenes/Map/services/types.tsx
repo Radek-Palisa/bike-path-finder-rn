@@ -1,9 +1,16 @@
 import { LatLng } from 'react-native-maps';
 
-export type DirectionsState = {
+export type DirectionParams = {
+  origin: LatLng;
+  originStation: LatLng;
+  destination: LatLng;
+  destinationStation: LatLng;
+};
+
+export type Directions = {
   walkingToStation: Route;
-  cycling: Route[];
   walkingToDestination: Route;
+  cycling: CyclingRoute[];
 };
 
 export type Route = {
@@ -11,6 +18,12 @@ export type Route = {
   bounds: google.maps.LatLngBounds;
   distance: google.maps.Distance | undefined;
   duration: google.maps.Duration | undefined;
+};
+
+/** For convenience, includes extra fields counting in the walking data */
+export type CyclingRoute = Route & {
+  totalDistance: google.maps.Distance;
+  totalDuration: google.maps.Duration;
 };
 
 export type StationStatus = {

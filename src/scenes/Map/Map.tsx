@@ -9,20 +9,23 @@ import FindMyLocationButton from './components/FindMyLocationButton';
 import getMyLocation from './services/getMyLocation';
 import MyLocationMarker from './components/MyLocationMarker';
 import StationMarkers from './components/StationMarkers';
-import { DirectionsState, StationsInfo, StationStatus } from './services/types';
+import type {
+  DirectionParams,
+  Directions,
+  StationsInfo,
+  StationStatus,
+} from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
-import { findAndUpdateNearStations } from './services/nearStations';
-import DirectionsPolyline, {
-  DirectionsOnChangeEvent,
-} from './components/DirectionsPolyline';
-import type { DirectionParams } from './components/DirectionsPolyline';
+import { findAndUpdateNearDestinationStations } from './services/nearStations';
+import DirectionsPolyline from './components/DirectionsPolyline';
+import type { DirectionsOnChangeEvent } from './components/DirectionsPolyline';
 
 export default function MapScene() {
   const map = useRef<MapView | null>(null);
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
-  const [directions, setDirections] = useState<DirectionsState | null>(null);
+  const [directions, setDirections] = useState<Directions | null>(null);
   const stationsNearOrigin = useRef<StationStatus[] | null>(null);
   const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
@@ -48,10 +51,8 @@ export default function MapScene() {
     if (!destination) return;
 
     setBikeStationsInfo(bikeStationsInfo => {
-      const { updatedStationsInfo, nearStations } = findAndUpdateNearStations(
-        bikeStationsInfo,
-        destination
-      );
+      const { updatedStationsInfo, nearStations } =
+        findAndUpdateNearDestinationStations(bikeStationsInfo, destination);
       stationsNearDestinaion.current = nearStations;
       return updatedStationsInfo;
     });
@@ -95,8 +96,8 @@ export default function MapScene() {
     if (
       !myLocation ||
       !destination ||
-      !stationsNearOrigin.current ||
-      !stationsNearDestinaion.current
+      !stationsNearOrigin.current?.[0] ||
+      !stationsNearDestinaion.current?.[0]
     ) {
       Alert.alert('Error', 'Missing direction parameters');
       return;

@@ -1,15 +1,7 @@
 import { useEffect, useState } from 'react';
-import type { LatLng } from 'react-native-maps';
 import getDirections from '../services/directionsApi';
 import { Polyline } from 'react-native-maps';
-import { DirectionsState } from '../services/types';
-
-export type DirectionParams = {
-  origin: LatLng;
-  originStation: LatLng;
-  destination: LatLng;
-  destinationStation: LatLng;
-};
+import { DirectionParams, Directions } from '../services/types';
 
 export type DirectionsOnChangeEvent =
   | {
@@ -17,7 +9,7 @@ export type DirectionsOnChangeEvent =
     }
   | {
       state: 'success';
-      data: DirectionsState;
+      data: Directions;
     }
   | {
       state: 'error';
@@ -33,7 +25,7 @@ export default function DirectionsPolyline({
   directionParams,
   onChange,
 }: Props) {
-  const [directions, setDirections] = useState<DirectionsState | null>(null);
+  const [directions, setDirections] = useState<Directions | null>(null);
 
   useEffect(() => {
     if (!directionParams) {
@@ -42,43 +34,11 @@ export default function DirectionsPolyline({
 
     onChange?.({ state: 'loading' });
 
-    const { origin, originStation, destination, destinationStation } =
-      directionParams;
-
-    const walkingToOriginStation = getDirections(origin, originStation, {
-      mode: 'walking',
-    });
-
-    const cycling = getDirections(originStation, destinationStation, {
-      mode: 'bicycling',
-      alternatives: true,
-    });
-
-    const walkingToDestination = getDirections(
-      destinationStation,
-      destination,
-      {
-        mode: 'walking',
-      }
-    );
-
-    Promise.all([walkingToOriginStation, cycling, walkingToDestination])
-      .then(
-        ([
-          walkingToStationRoutes,
-          cyclingRoutes,
-          walkingToDestinationRoutes,
-        ]) => {
-          const directionsState = {
-            walkingToStation: walkingToStationRoutes[0],
-            cycling: cyclingRoutes,
-            walkingToDestination: walkingToDestinationRoutes[0],
-          };
-
-          setDirections(directionsState);
-          onChange?.({ state: 'success', data: directionsState });
-        }
-      )
+    getDirections(directionParams)
+      .then(directions => {
+        setDirections(directions);
+        onChange?.({ state: 'success', data: directions });
+      })
       .catch(error => onChange?.({ state: 'error', error }));
   }, [directionParams, setDirections]);
 

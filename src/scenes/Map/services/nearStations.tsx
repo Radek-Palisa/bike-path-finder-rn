@@ -26,7 +26,7 @@ type FindNearStationsResult = {
   nearStations: StationStatus[] | null;
 };
 
-export function findAndUpdateNearStations(
+export function findAndUpdateNearDestinationStations(
   stationsInfo: StationsInfo | null,
   location: LatLng
 ): FindNearStationsResult {
@@ -43,7 +43,11 @@ export function findAndUpdateNearStations(
     ([stationdId, station]) => {
       const distance = calculateDistance(location, station.coordinate);
 
-      mutateNearStations(nearStations, { distance, station });
+      const hasAvailableDocks = station.availableDocks > 0;
+
+      if (hasAvailableDocks) {
+        mutateNearStations(nearStations, { distance, station });
+      }
 
       if (distance <= NEAR_STATION_DISTANCE_METERS) {
         station.shouldShowStatus = true;

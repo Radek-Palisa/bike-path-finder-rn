@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native';
-import { DirectionsState } from '../services/types';
+import { Directions } from '../services/types';
 import CancelDirectionsButton from './CancelDirectionsButton';
 
 type Props = {
   onDirectionsClearPress: () => void;
-  directionsData: DirectionsState | null;
+  directionsData: Directions | null;
 };
 
 export default function DirectionsPanelMenu({
