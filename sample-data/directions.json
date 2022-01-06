@@ -2,40 +2,12 @@
   "walkingToStation": {
     "polylineCoordinates": [
       {
-        "latitude": 41.38712,
-        "longitude": 2.17034
-      },
-      {
-        "latitude": 41.387,
-        "longitude": 2.1704
-      },
-      {
-        "latitude": 41.38691,
-        "longitude": 2.1704
-      },
-      {
-        "latitude": 41.38686,
-        "longitude": 2.17038
-      },
-      {
-        "latitude": 41.3868,
-        "longitude": 2.17033
-      },
-      {
-        "latitude": 41.38676,
-        "longitude": 2.17026
-      },
-      {
-        "latitude": 41.38672,
+        "latitude": 41.38699,
         "longitude": 2.17009
       },
       {
-        "latitude": 41.38676,
-        "longitude": 2.16995
-      },
-      {
-        "latitude": 41.38681,
-        "longitude": 2.16984
+        "latitude": 41.38702,
+        "longitude": 2.17005
       },
       {
         "latitude": 41.38687,
@@ -68,8 +40,8 @@
     ],
     "bounds": {
       "northeast": {
-        "lat": 41.3871177,
-        "lng": 2.1704018
+        "lat": 41.3870153,
+        "lng": 2.1700936
       },
       "southwest": {
         "lat": 41.3865758,
@@ -77,8 +49,46 @@
       }
     },
     "distance": {
+      "text": "86 m",
+      "value": 86
+    },
+    "duration": {
+      "text": "1 min",
+      "value": 66
+    }
+  },
+  "walkingToDestination": {
+    "polylineCoordinates": [
+      {
+        "latitude": 41.39253,
+        "longitude": 2.17182
+      },
+      {
+        "latitude": 41.39241,
+        "longitude": 2.17198
+      },
+      {
+        "latitude": 41.39214,
+        "longitude": 2.17165
+      },
+      {
+        "latitude": 41.39181,
+        "longitude": 2.1712
+      }
+    ],
+    "bounds": {
+      "northeast": {
+        "lat": 41.3925279,
+        "lng": 2.1719847
+      },
+      "southwest": {
+        "lat": 41.3918055,
+        "lng": 2.1711981
+      }
+    },
+    "distance": {
       "text": "0.1 km",
-      "value": 146
+      "value": 148
     },
     "duration": {
       "text": "2 mins",
@@ -214,6 +224,14 @@
       "duration": {
         "text": "4 mins",
         "value": 260
+      },
+      "totalDistance": {
+        "text": "1.2 km",
+        "value": 1192
+      },
+      "totalDuration": {
+        "text": "7 min",
+        "value": 436
       }
     },
     {
@@ -312,57 +330,15 @@
       "duration": {
         "text": "5 mins",
         "value": 321
+      },
+      "totalDistance": {
+        "text": "1.2 km",
+        "value": 1171
+      },
+      "totalDuration": {
+        "text": "8 min",
+        "value": 497
       }
     }
-  ],
-  "walkingToDestination": {
-    "polylineCoordinates": [
-      {
-        "latitude": 41.39253,
-        "longitude": 2.17182
-      },
-      {
-        "latitude": 41.39241,
-        "longitude": 2.17198
-      },
-      {
-        "latitude": 41.39214,
-        "longitude": 2.17165
-      },
-      {
-        "latitude": 41.39161,
-        "longitude": 2.17093
-      },
-      {
-        "latitude": 41.39156,
-        "longitude": 2.17087
-      },
-      {
-        "latitude": 41.39161,
-        "longitude": 2.1708
-      },
-      {
-        "latitude": 41.39201,
-        "longitude": 2.17025
-      }
-    ],
-    "bounds": {
-      "northeast": {
-        "lat": 41.3925279,
-        "lng": 2.1719847
-      },
-      "southwest": {
-        "lat": 41.3915572,
-        "lng": 2.170248
-      }
-    },
-    "distance": {
-      "text": "0.2 km",
-      "value": 227
-    },
-    "duration": {
-      "text": "3 mins",
-      "value": 183
-    }
-  }
+  ]
 }
