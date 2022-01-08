@@ -19,6 +19,8 @@ import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findAndUpdateNearDestinationStations } from './services/nearStations';
 import DirectionsPolyline from './components/DirectionsPolyline';
 import type { DirectionsOnChangeEvent } from './components/DirectionsPolyline';
+import TopPanel from './components/TopPanel';
+import DirectionsControls from './components/DirectionsControls';
 
 export default function MapScene() {
   const map = useRef<MapView | null>(null);
@@ -132,6 +134,11 @@ export default function MapScene() {
           onChange={handleDirectionsChange}
         />
       </MapView>
+      {directionParams && (
+        <TopPanel isActivated={true}>
+          <DirectionsControls onDirectionsClearPress={handleDirectionsClear} />
+        </TopPanel>
+      )}
       <BottomPanel
         isActivated={Boolean(destination)}
         afloatContent={
@@ -139,10 +146,7 @@ export default function MapScene() {
         }
         panelContent={
           directionParams ? (
-            <DirectionsInfo
-              onDirectionsClearPress={handleDirectionsClear}
-              directionsData={directions}
-            />
+            <DirectionsInfo directions={directions} />
           ) : (
             <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
           )
