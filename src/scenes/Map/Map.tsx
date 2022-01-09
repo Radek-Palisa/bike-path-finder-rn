@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Dimensions, Alert } from 'react-native';
+import { StatusBar, StyleSheet, View, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import type { LatLng, Camera } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
@@ -148,6 +148,7 @@ export default function MapScene() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <MapView
         ref={map}
         initialCamera={initialCamera}
