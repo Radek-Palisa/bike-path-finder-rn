@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { StatusBar, StyleSheet, View, Dimensions, Alert } from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  View,
+  Dimensions,
+  Alert,
+  useWindowDimensions,
+} from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import type { LatLng, Camera } from 'react-native-maps';
+import type { LatLng, Camera, MapEvent } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo';
 import BottomPanel from './components/BottomPanel';
@@ -48,6 +55,7 @@ type DirectionState =
   | null;
 
 export default function MapScene() {
+  const window = useWindowDimensions();
   const map = useRef<MapView | null>(null);
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
@@ -89,11 +97,21 @@ export default function MapScene() {
   }, [directionState, setDestination]);
 
   const handleMapLongPress = useCallback(
-    e => {
+    (e: MapEvent) => {
       if (directionState) return;
+
+      // if pressed at the bottom of the screen,
+      // the slide-up bottom panel will hide the destination
+      // marker, so center the marker to the middle of the screen.
+      if (window.height - e.nativeEvent.position.y < 120) {
+        map.current?.animateCamera({
+          center: e.nativeEvent.coordinate,
+        });
+      }
+
       setDestination(e.nativeEvent.coordinate);
     },
-    [directionState, setDestination]
+    [directionState, window, setDestination]
   );
 
   const handleFindMyLocationPress = () => {
