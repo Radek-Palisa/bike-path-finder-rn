@@ -1,4 +1,5 @@
 import { View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
   isActivated: boolean;
@@ -12,9 +13,22 @@ export default function BottomPanel({
   panelContent,
 }: Props) {
   return (
-    <View style={[styles.container, { bottom: isActivated ? 0 : -88 }]}>
-      <View style={styles.afloatContent}>{afloatContent}</View>
-      <View style={styles.panelContent}>{panelContent}</View>
+    <View
+      style={[styles.container, isActivated ? { bottom: 0 } : { top: '100%' }]}
+    >
+      <SafeAreaView
+        mode="margin"
+        edges={['bottom', 'right']}
+        style={styles.afloatContent}
+      >
+        {afloatContent}
+      </SafeAreaView>
+      <SafeAreaView
+        edges={['bottom', 'left', 'right']}
+        style={styles.panelContent}
+      >
+        {panelContent}
+      </SafeAreaView>
     </View>
   );
 }
@@ -25,17 +39,17 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   afloatContent: {
-    flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 20,
-    paddingRight: 16,
+    position: 'absolute',
+    right: 0,
+    bottom: '100%',
+    marginBottom: 20,
+    marginRight: 16,
   },
   panelContent: {
     width: '100%',
-    paddingTop: 16,
+    paddingTop: 20,
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 16,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     backgroundColor: '#fff',
