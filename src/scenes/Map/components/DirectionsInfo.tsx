@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   directionsInfo: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginTop: 10,
     paddingLeft: 10,
   },
   duration: {

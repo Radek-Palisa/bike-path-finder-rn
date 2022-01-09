@@ -47,11 +47,8 @@ const styles = StyleSheet.create({
   },
   panelContent: {
     width: '100%',
-    paddingTop: 20,
+    paddingVertical: 20,
     paddingHorizontal: 16,
-    paddingBottom: 16,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
     backgroundColor: '#fff',
     // box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     shadowColor: '#000',
