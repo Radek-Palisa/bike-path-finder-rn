@@ -1,49 +1,12 @@
-import { useEffect, useState } from 'react';
-import getDirections from '../services/directionsApi';
+import { memo } from 'react';
 import { Polyline } from 'react-native-maps';
-import { DirectionParams, Directions } from '../services/types';
-
-export type DirectionsOnChangeEvent =
-  | {
-      state: 'loading';
-    }
-  | {
-      state: 'success';
-      data: Directions;
-    }
-  | {
-      state: 'error';
-      error: Error;
-    };
+import { Directions } from '../services/types';
 
 type Props = {
-  directionParams: DirectionParams | null;
-  onChange?: (event: DirectionsOnChangeEvent) => void;
+  directions: Directions;
 };
 
-export default function DirectionsPolyline({
-  directionParams,
-  onChange,
-}: Props) {
-  const [directions, setDirections] = useState<Directions | null>(null);
-
-  useEffect(() => {
-    if (!directionParams) {
-      return setDirections(null);
-    }
-
-    onChange?.({ state: 'loading' });
-
-    getDirections(directionParams)
-      .then(directions => {
-        setDirections(directions);
-        onChange?.({ state: 'success', data: directions });
-      })
-      .catch(error => onChange?.({ state: 'error', error }));
-  }, [directionParams, setDirections]);
-
-  if (!directions) return null;
-
+export default memo(function DirectionsPolyline({ directions }: Props) {
   return (
     <>
       <Polyline
@@ -69,4 +32,4 @@ export default function DirectionsPolyline({
       />
     </>
   );
-}
+});

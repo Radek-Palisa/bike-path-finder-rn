@@ -18,23 +18,34 @@ import type {
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findAndUpdateNearDestinationStations } from './services/nearStations';
 import DirectionsPolyline from './components/DirectionsPolyline';
-import type { DirectionsOnChangeEvent } from './components/DirectionsPolyline';
 import TopPanel from './components/TopPanel';
 import DirectionsControls from './components/DirectionsControls';
+import getDirections from './services/directionsApi';
+
+type DirectionState =
+  | {
+      params: DirectionParams;
+      state: 'loading';
+      directions: null;
+    }
+  | {
+      params: DirectionParams;
+      state: 'success';
+      directions: Directions;
+    }
+  | null;
 
 export default function MapScene() {
   const map = useRef<MapView | null>(null);
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
-  const [directions, setDirections] = useState<Directions | null>(null);
+  const [directionState, setDirectionState] = useState<DirectionState>(null);
   const stationsNearOrigin = useRef<StationStatus[] | null>(null);
   const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
     null
   );
-  const [directionParams, setDirectionParams] =
-    useState<DirectionParams | null>(null);
 
   useEffect(() => {
     const myLocation = getMyLocation().then(location => {
@@ -61,16 +72,16 @@ export default function MapScene() {
   }, [destination, setBikeStationsInfo]);
 
   const handleMapPress = useCallback(() => {
-    if (directionParams) return;
+    if (directionState) return;
     setDestination(null);
-  }, [directionParams, setDestination]);
+  }, [directionState, setDestination]);
 
   const handleMapLongPress = useCallback(
     e => {
-      if (directionParams) return;
+      if (directionState) return;
       setDestination(e.nativeEvent.coordinate);
     },
-    [directionParams, setDestination]
+    [directionState, setDestination]
   );
 
   const handleFindMyLocationPress = () => {
@@ -80,19 +91,6 @@ export default function MapScene() {
       zoom: 16,
     });
   };
-
-  const handleDirectionsChange = useCallback(
-    (event: DirectionsOnChangeEvent) => {
-      if (event.state === 'loading') return;
-
-      if (event.state === 'error') {
-        return Alert.alert('Error', event.error.message);
-      }
-
-      setDirections(event.data);
-    },
-    [setDirections]
-  );
 
   const handleDirectionsPress = () => {
     if (
@@ -105,16 +103,35 @@ export default function MapScene() {
       return;
     }
 
-    setDirectionParams({
+    const directionParams = {
       origin: myLocation,
       originStation: stationsNearOrigin.current[0].coordinate,
       destination,
       destinationStation: stationsNearDestinaion.current[0].coordinate,
+    };
+
+    setDirectionState({
+      params: directionParams,
+      state: 'loading',
+      directions: null,
     });
+
+    getDirections(directionParams)
+      .then(directions => {
+        setDirectionState({
+          params: directionParams,
+          state: 'success',
+          directions,
+        });
+      })
+      .catch(error => {
+        setDirectionState(null);
+        Alert.alert('Error', error.message);
+      });
   };
 
   const handleDirectionsClear = () => {
-    setDirectionParams(null);
+    setDirectionState(null);
   };
 
   return (
@@ -129,24 +146,21 @@ export default function MapScene() {
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
         {bikeStationsInfo && <StationMarkers data={bikeStationsInfo} />}
-        <DirectionsPolyline
-          directionParams={directionParams}
-          onChange={handleDirectionsChange}
-        />
+        {directionState?.directions && (
+          <DirectionsPolyline directions={directionState.directions} />
+        )}
       </MapView>
-      {directionParams && (
-        <TopPanel isActivated={true}>
-          <DirectionsControls onDirectionsClearPress={handleDirectionsClear} />
-        </TopPanel>
-      )}
+      <TopPanel isActivated={Boolean(directionState)}>
+        <DirectionsControls onDirectionsClearPress={handleDirectionsClear} />
+      </TopPanel>
       <BottomPanel
         isActivated={Boolean(destination)}
         afloatContent={
           <FindMyLocationButton onPress={handleFindMyLocationPress} />
         }
         panelContent={
-          directionParams ? (
-            <DirectionsInfo directions={directions} />
+          directionState ? (
+            <DirectionsInfo directions={directionState.directions} />
           ) : (
             <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
           )
