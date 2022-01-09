@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import type { LatLng } from 'react-native-maps';
+import type { LatLng, Camera } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo';
 import BottomPanel from './components/BottomPanel';
@@ -21,6 +21,18 @@ import DirectionsPolyline from './components/DirectionsPolyline';
 import TopPanel from './components/TopPanel';
 import DirectionsControls from './components/DirectionsControls';
 import getDirections from './services/directionsApi';
+
+const initialCamera: Camera = {
+  /** Pl. Catalunya */
+  center: {
+    latitude: 41.3870531,
+    longitude: 2.17006,
+  },
+  zoom: 15,
+  pitch: 0,
+  heading: 0,
+  altitude: 0,
+} as const;
 
 type DirectionState =
   | {
@@ -138,6 +150,7 @@ export default function MapScene() {
     <View style={styles.container}>
       <MapView
         ref={map}
+        initialCamera={initialCamera}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         onLongPress={handleMapLongPress}
