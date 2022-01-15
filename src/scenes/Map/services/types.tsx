@@ -13,9 +13,14 @@ export type Directions = {
   cycling: CyclingRoute[];
 };
 
+type Bounds = {
+  northeast: LatLng;
+  southwest: LatLng;
+};
+
 export type Route = {
   polylineCoordinates: LatLng[];
-  bounds: google.maps.LatLngBounds;
+  bounds: Bounds;
   distance: google.maps.Distance | undefined;
   duration: google.maps.Duration | undefined;
 };
@@ -24,6 +29,7 @@ export type Route = {
 export type CyclingRoute = Route & {
   totalDistance: google.maps.Distance;
   totalDuration: google.maps.Duration;
+  totalBounds: Bounds;
 };
 
 export type StationStatus = {

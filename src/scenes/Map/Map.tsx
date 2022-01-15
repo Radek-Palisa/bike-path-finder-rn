@@ -148,6 +148,20 @@ export default function MapScene() {
 
     getDirections(directionParams)
       .then(directions => {
+        map.current?.fitToCoordinates(
+          [
+            directions.cycling[0].totalBounds.northeast,
+            directions.cycling[0].totalBounds.southwest,
+          ],
+          {
+            edgePadding: {
+              top: 150,
+              right: 15,
+              bottom: 150,
+              left: 15,
+            },
+          }
+        );
         setDirectionState({
           params: directionParams,
           state: 'success',

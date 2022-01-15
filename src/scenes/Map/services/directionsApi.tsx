@@ -47,6 +47,9 @@ export default async function getDirections({
   const walkingToDestinationDurationValue =
     walkingToDestinationRoutes[0]?.duration?.value ?? 0;
 
+  const walkingToStationBounds = walkingToStationRoutes[0]?.bounds;
+  const walkingToDestinationBounds = walkingToDestinationRoutes[0]?.bounds;
+
   return {
     walkingToStation: walkingToStationRoutes[0],
     walkingToDestination: walkingToDestinationRoutes[0],
@@ -76,6 +79,32 @@ export default async function getDirections({
             walkingToStationDurationValue +
             walkingToDestinationDurationValue +
             cyclingDurationValue,
+        },
+        totalBounds: {
+          northeast: {
+            latitude: Math.max(
+              walkingToStationBounds.northeast.latitude,
+              walkingToDestinationBounds.northeast.latitude,
+              cyclingRoute.bounds.northeast.latitude
+            ),
+            longitude: Math.max(
+              walkingToStationBounds.northeast.longitude,
+              walkingToDestinationBounds.northeast.longitude,
+              cyclingRoute.bounds.northeast.longitude
+            ),
+          },
+          southwest: {
+            latitude: Math.min(
+              walkingToStationBounds.southwest.latitude,
+              walkingToDestinationBounds.southwest.latitude,
+              cyclingRoute.bounds.southwest.latitude
+            ),
+            longitude: Math.min(
+              walkingToStationBounds.southwest.longitude,
+              walkingToDestinationBounds.southwest.longitude,
+              cyclingRoute.bounds.southwest.longitude
+            ),
+          },
         },
       };
     }),
@@ -122,9 +151,25 @@ function mapGoogleDirectionsResult(
       longitude,
     }));
 
+    // google.maps.LatLngBounds is a class provided by Google's client SDK,
+    // but here we're working with the REST response directly.
+    const routeBounds = bounds as unknown as {
+      northeast: google.maps.LatLngLiteral;
+      southwest: google.maps.LatLngLiteral;
+    };
+
     return {
       polylineCoordinates,
-      bounds,
+      bounds: {
+        northeast: {
+          latitude: routeBounds.northeast.lat,
+          longitude: routeBounds.northeast.lng,
+        },
+        southwest: {
+          latitude: routeBounds.southwest.lat,
+          longitude: routeBounds.southwest.lng,
+        },
+      },
       distance: legs[0].distance,
       duration: legs[0].duration,
     };
