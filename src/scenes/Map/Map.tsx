@@ -28,6 +28,9 @@ import DirectionsPolyline from './components/DirectionsPolyline';
 import TopPanel from './components/TopPanel';
 import DirectionsControls from './components/DirectionsControls';
 import getDirections from './services/directionsApi';
+import { getZoomGrade, getZoomLevel } from './services/getZoomLevel';
+
+const initialZoomLevel = 15;
 
 const initialCamera: Camera = {
   /** Pl. Catalunya */
@@ -35,7 +38,7 @@ const initialCamera: Camera = {
     latitude: 41.3870531,
     longitude: 2.17006,
   },
-  zoom: 15,
+  zoom: initialZoomLevel,
   pitch: 0,
   heading: 0,
   altitude: 0,
@@ -57,6 +60,7 @@ type DirectionState =
 export default function MapScene() {
   const window = useWindowDimensions();
   const map = useRef<MapView | null>(null);
+  const zoomGrade = useRef<number>(getZoomGrade(initialZoomLevel));
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
@@ -188,6 +192,14 @@ export default function MapScene() {
         style={styles.map}
         onLongPress={handleMapLongPress}
         onPress={handleMapPress}
+        onRegionChangeComplete={region => {
+          const zoomLevel = getZoomLevel(window.width, region.longitudeDelta);
+          const newZoomGrade = getZoomGrade(zoomLevel);
+
+          if (newZoomGrade !== zoomGrade.current) {
+            zoomGrade.current = newZoomGrade;
+          }
+        }}
       >
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
