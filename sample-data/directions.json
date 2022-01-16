@@ -2,342 +2,174 @@
   "walkingToStation": {
     "polylineCoordinates": [
       {
-        "latitude": 41.38699,
-        "longitude": 2.17009
+        "latitude": 41.40212,
+        "longitude": 2.20357
       },
       {
-        "latitude": 41.38702,
-        "longitude": 2.17005
+        "latitude": 41.40246,
+        "longitude": 2.20402
       },
       {
-        "latitude": 41.38687,
-        "longitude": 2.16978
+        "latitude": 41.40288,
+        "longitude": 2.20343
       },
       {
-        "latitude": 41.38675,
-        "longitude": 2.16956
+        "latitude": 41.40302,
+        "longitude": 2.20325
       },
       {
-        "latitude": 41.38671,
-        "longitude": 2.16949
+        "latitude": 41.40332,
+        "longitude": 2.20282
       },
       {
-        "latitude": 41.38669,
-        "longitude": 2.1695
+        "latitude": 41.40287,
+        "longitude": 2.20218
       },
       {
-        "latitude": 41.38664,
-        "longitude": 2.16943
-      },
-      {
-        "latitude": 41.38662,
-        "longitude": 2.16945
-      },
-      {
-        "latitude": 41.38658,
-        "longitude": 2.16937
+        "latitude": 41.40259,
+        "longitude": 2.20182
       }
     ],
     "bounds": {
-      "northeast": {
-        "lat": 41.3870153,
-        "lng": 2.1700936
+      "northEast": {
+        "latitude": 41.4033221,
+        "longitude": 2.2040183
       },
-      "southwest": {
-        "lat": 41.3865758,
-        "lng": 2.1693678
+      "southWest": {
+        "latitude": 41.4021215,
+        "longitude": 2.2018179
       }
     },
     "distance": {
-      "text": "86 m",
-      "value": 86
+      "text": "0.3 km",
+      "value": 316
     },
     "duration": {
-      "text": "1 min",
-      "value": 66
+      "text": "4 mins",
+      "value": 235
     }
   },
   "walkingToDestination": {
     "polylineCoordinates": [
       {
-        "latitude": 41.39253,
-        "longitude": 2.17182
+        "latitude": 41.39929,
+        "longitude": 2.19748
       },
       {
-        "latitude": 41.39241,
-        "longitude": 2.17198
+        "latitude": 41.3995,
+        "longitude": 2.19776
       },
       {
-        "latitude": 41.39214,
-        "longitude": 2.17165
+        "latitude": 41.39863,
+        "longitude": 2.19894
       },
       {
-        "latitude": 41.39181,
-        "longitude": 2.1712
+        "latitude": 41.39857,
+        "longitude": 2.19901
       }
     ],
     "bounds": {
-      "northeast": {
-        "lat": 41.3925279,
-        "lng": 2.1719847
+      "northEast": {
+        "latitude": 41.3994985,
+        "longitude": 2.1990109
       },
-      "southwest": {
-        "lat": 41.3918055,
-        "lng": 2.1711981
+      "southWest": {
+        "latitude": 41.3985712,
+        "longitude": 2.1974751
       }
     },
     "distance": {
-      "text": "0.1 km",
-      "value": 148
+      "text": "0.2 km",
+      "value": 172
     },
     "duration": {
       "text": "2 mins",
-      "value": 110
+      "value": 127
     }
   },
   "cycling": [
     {
       "polylineCoordinates": [
         {
-          "latitude": 41.38655,
-          "longitude": 2.16945
+          "latitude": 41.40257,
+          "longitude": 2.20185
         },
         {
-          "latitude": 41.38689,
-          "longitude": 2.16916
+          "latitude": 41.40169,
+          "longitude": 2.20072
         },
         {
-          "latitude": 41.38713,
-          "longitude": 2.16895
+          "latitude": 41.40167,
+          "longitude": 2.20074
         },
         {
-          "latitude": 41.38743,
-          "longitude": 2.16863
+          "latitude": 41.40163,
+          "longitude": 2.20076
         },
         {
-          "latitude": 41.3874,
-          "longitude": 2.16855
+          "latitude": 41.40158,
+          "longitude": 2.20076
         },
         {
-          "latitude": 41.38743,
-          "longitude": 2.16844
+          "latitude": 41.40153,
+          "longitude": 2.20073
         },
         {
-          "latitude": 41.38753,
-          "longitude": 2.16831
+          "latitude": 41.40149,
+          "longitude": 2.20065
         },
         {
-          "latitude": 41.38807,
-          "longitude": 2.16757
+          "latitude": 41.40147,
+          "longitude": 2.20053
         },
         {
-          "latitude": 41.38825,
-          "longitude": 2.16733
+          "latitude": 41.40149,
+          "longitude": 2.20046
         },
         {
-          "latitude": 41.38838,
-          "longitude": 2.16725
+          "latitude": 41.39945,
+          "longitude": 2.19776
         },
         {
-          "latitude": 41.38845,
-          "longitude": 2.16721
-        },
-        {
-          "latitude": 41.38861,
-          "longitude": 2.16701
-        },
-        {
-          "latitude": 41.38847,
-          "longitude": 2.16686
-        },
-        {
-          "latitude": 41.38861,
-          "longitude": 2.16701
-        },
-        {
-          "latitude": 41.38936,
-          "longitude": 2.16797
-        },
-        {
-          "latitude": 41.38947,
-          "longitude": 2.16814
-        },
-        {
-          "latitude": 41.38954,
-          "longitude": 2.16821
-        },
-        {
-          "latitude": 41.38966,
-          "longitude": 2.16854
-        },
-        {
-          "latitude": 41.3897,
-          "longitude": 2.16862
-        },
-        {
-          "latitude": 41.38989,
-          "longitude": 2.16889
-        },
-        {
-          "latitude": 41.39064,
-          "longitude": 2.16988
-        },
-        {
-          "latitude": 41.39132,
-          "longitude": 2.17082
-        },
-        {
-          "latitude": 41.39172,
-          "longitude": 2.17132
-        },
-        {
-          "latitude": 41.39225,
-          "longitude": 2.17199
-        },
-        {
-          "latitude": 41.39232,
-          "longitude": 2.17189
-        },
-        {
-          "latitude": 41.39235,
-          "longitude": 2.17185
-        },
-        {
-          "latitude": 41.39237,
-          "longitude": 2.17188
+          "latitude": 41.39926,
+          "longitude": 2.19751
         }
       ],
       "bounds": {
-        "northeast": {
-          "lat": 41.3923718,
-          "lng": 2.171989
+        "northEast": {
+          "latitude": 41.4025668,
+          "longitude": 2.2018523
         },
-        "southwest": {
-          "lat": 41.3865525,
-          "lng": 2.1668619
+        "southWest": {
+          "latitude": 41.3992644,
+          "longitude": 2.1975088
         }
       },
       "distance": {
-        "text": "1.0 km",
-        "value": 958
+        "text": "0.5 km",
+        "value": 529
       },
       "duration": {
-        "text": "4 mins",
-        "value": 260
+        "text": "2 mins",
+        "value": 101
       },
       "totalDistance": {
-        "text": "1.2 km",
-        "value": 1192
-      },
-      "totalDuration": {
-        "text": "7 min",
-        "value": 436
-      }
-    },
-    {
-      "polylineCoordinates": [
-        {
-          "latitude": 41.38655,
-          "longitude": 2.16945
-        },
-        {
-          "latitude": 41.38689,
-          "longitude": 2.16916
-        },
-        {
-          "latitude": 41.38713,
-          "longitude": 2.16895
-        },
-        {
-          "latitude": 41.38743,
-          "longitude": 2.16863
-        },
-        {
-          "latitude": 41.38786,
-          "longitude": 2.16982
-        },
-        {
-          "latitude": 41.38798,
-          "longitude": 2.17014
-        },
-        {
-          "latitude": 41.38824,
-          "longitude": 2.16981
-        },
-        {
-          "latitude": 41.38891,
-          "longitude": 2.16897
-        },
-        {
-          "latitude": 41.38914,
-          "longitude": 2.16868
-        },
-        {
-          "latitude": 41.38936,
-          "longitude": 2.16857
-        },
-        {
-          "latitude": 41.38954,
-          "longitude": 2.16845
-        },
-        {
-          "latitude": 41.3896,
-          "longitude": 2.16837
-        },
-        {
-          "latitude": 41.38969,
-          "longitude": 2.16861
-        },
-        {
-          "latitude": 41.39031,
-          "longitude": 2.16944
-        },
-        {
-          "latitude": 41.39075,
-          "longitude": 2.17004
-        },
-        {
-          "latitude": 41.39148,
-          "longitude": 2.17104
-        },
-        {
-          "latitude": 41.39225,
-          "longitude": 2.17199
-        },
-        {
-          "latitude": 41.39235,
-          "longitude": 2.17185
-        },
-        {
-          "latitude": 41.39237,
-          "longitude": 2.17188
-        }
-      ],
-      "bounds": {
-        "northeast": {
-          "lat": 41.3923718,
-          "lng": 2.171989
-        },
-        "southwest": {
-          "lat": 41.3865525,
-          "lng": 2.1683711
-        }
-      },
-      "distance": {
-        "text": "0.9 km",
-        "value": 937
-      },
-      "duration": {
-        "text": "5 mins",
-        "value": 321
-      },
-      "totalDistance": {
-        "text": "1.2 km",
-        "value": 1171
+        "text": "1 km",
+        "value": 1017
       },
       "totalDuration": {
         "text": "8 min",
-        "value": 497
+        "value": 463
+      },
+      "totalBounds": {
+        "northEast": {
+          "latitude": 41.4033221,
+          "longitude": 2.2040183
+        },
+        "southWest": {
+          "latitude": 41.3985712,
+          "longitude": 2.1974751
+        }
       }
     }
   ]
