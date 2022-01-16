@@ -32,7 +32,7 @@ import getDirections from './services/directionsApi';
 import { getZoomLevel } from './services/getZoomLevel';
 
 const isZoomedInLevel = 15;
-const initialZoomLevel = 15;
+const initialZoomLevel = 14;
 
 const initialCamera: Camera = {
   /** Pl. Catalunya */
