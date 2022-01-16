@@ -43,7 +43,6 @@ function mapBicingStationsInfo(
           latitude: lat,
         },
         capacity,
-        shouldShowStatus: false,
         availableMechanical: 0,
         availableElectric: 0,
         availableDocks: 0,

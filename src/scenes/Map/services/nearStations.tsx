@@ -2,7 +2,6 @@ import { LatLng } from 'react-native-maps';
 import calculateDistance from './calculateDistance';
 import { StationsInfo, StationStatus } from './types';
 
-export const NEAR_STATION_DISTANCE_METERS = 500;
 const NEAR_STATIONS_LIMIT = 3;
 
 export type NearStation = {
@@ -47,10 +46,6 @@ export function findAndUpdateNearDestinationStations(
 
       if (hasAvailableDocks) {
         mutateNearStations(nearStations, { distance, station });
-      }
-
-      if (distance <= NEAR_STATION_DISTANCE_METERS) {
-        station.shouldShowStatus = true;
       }
 
       return [stationdId, station];

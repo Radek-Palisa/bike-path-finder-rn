@@ -2,10 +2,7 @@ import { useRef } from 'react';
 import { LatLng } from 'react-native-maps';
 import { fetchBicingStationsStatus, getBikeStationsInfo } from './bicingApi';
 import calculateDistance from './calculateDistance';
-import {
-  mutateNearStations,
-  NEAR_STATION_DISTANCE_METERS,
-} from './nearStations';
+import { mutateNearStations } from './nearStations';
 import type { NearStation } from './nearStations';
 import { StationsInfo, StationStatus } from './types';
 
@@ -47,10 +44,6 @@ export default function useGetBikeStationsInfo(): GetBikeStationsInfo {
 
         if (hasAvailableBikes) {
           mutateNearStations(nearStations, { distance, station });
-        }
-
-        if (distance <= NEAR_STATION_DISTANCE_METERS) {
-          station.shouldShowStatus = true;
         }
       }
     });

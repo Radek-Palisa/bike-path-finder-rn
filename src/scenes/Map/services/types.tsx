@@ -35,7 +35,6 @@ export type CyclingRoute = Route & {
 export type StationStatus = {
   coordinate: LatLng;
   capacity: number;
-  shouldShowStatus: boolean;
   availableMechanical: number;
   availableElectric: number;
   availableDocks: number;
