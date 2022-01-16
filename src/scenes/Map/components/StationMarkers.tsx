@@ -71,7 +71,6 @@ const StationCapacityMarkers = memo(function _StationCapacityMarkers({
   stations,
   toggleMounted,
 }: StationCapacityMarkersProps) {
-  console.log(`rendering ${stations.length} stations`);
   useEffect(() => {
     if (toggleMounted) {
       toggleMounted(true);
