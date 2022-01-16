@@ -81,28 +81,28 @@ export default async function getDirections({
             cyclingDurationValue,
         },
         totalBounds: {
-          northeast: {
+          northEast: {
             latitude: Math.max(
-              walkingToStationBounds.northeast.latitude,
-              walkingToDestinationBounds.northeast.latitude,
-              cyclingRoute.bounds.northeast.latitude
+              walkingToStationBounds.northEast.latitude,
+              walkingToDestinationBounds.northEast.latitude,
+              cyclingRoute.bounds.northEast.latitude
             ),
             longitude: Math.max(
-              walkingToStationBounds.northeast.longitude,
-              walkingToDestinationBounds.northeast.longitude,
-              cyclingRoute.bounds.northeast.longitude
+              walkingToStationBounds.northEast.longitude,
+              walkingToDestinationBounds.northEast.longitude,
+              cyclingRoute.bounds.northEast.longitude
             ),
           },
-          southwest: {
+          southWest: {
             latitude: Math.min(
-              walkingToStationBounds.southwest.latitude,
-              walkingToDestinationBounds.southwest.latitude,
-              cyclingRoute.bounds.southwest.latitude
+              walkingToStationBounds.southWest.latitude,
+              walkingToDestinationBounds.southWest.latitude,
+              cyclingRoute.bounds.southWest.latitude
             ),
             longitude: Math.min(
-              walkingToStationBounds.southwest.longitude,
-              walkingToDestinationBounds.southwest.longitude,
-              cyclingRoute.bounds.southwest.longitude
+              walkingToStationBounds.southWest.longitude,
+              walkingToDestinationBounds.southWest.longitude,
+              cyclingRoute.bounds.southWest.longitude
             ),
           },
         },
@@ -161,11 +161,11 @@ function mapGoogleDirectionsResult(
     return {
       polylineCoordinates,
       bounds: {
-        northeast: {
+        northEast: {
           latitude: routeBounds.northeast.lat,
           longitude: routeBounds.northeast.lng,
         },
-        southwest: {
+        southWest: {
           latitude: routeBounds.southwest.lat,
           longitude: routeBounds.southwest.lng,
         },

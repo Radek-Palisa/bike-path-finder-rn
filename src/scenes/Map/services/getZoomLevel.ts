@@ -9,20 +9,3 @@ export function getZoomLevel(
 ): number {
   return Math.round(Math.log2(360 * (windowWidth / 256 / longitudeDelta)));
 }
-
-/**
- * While Zoom Level should corresponds with Google Maps Zoom,
- * Zoom Grade is used to determine the size of the markers.
- */
-export function getZoomGrade(zoomLevel: number): number {
-  if (zoomLevel < 12) {
-    return 0;
-  }
-  if (zoomLevel < 14) {
-    return 1;
-  }
-  if (zoomLevel < 16) {
-    return 2;
-  }
-  return 3;
-}

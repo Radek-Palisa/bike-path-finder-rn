@@ -13,9 +13,9 @@ export type Directions = {
   cycling: CyclingRoute[];
 };
 
-type Bounds = {
-  northeast: LatLng;
-  southwest: LatLng;
+export type Bounds = {
+  northEast: LatLng;
+  southWest: LatLng;
 };
 
 export type Route = {

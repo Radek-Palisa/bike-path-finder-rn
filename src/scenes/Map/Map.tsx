@@ -7,7 +7,7 @@ import {
   Alert,
   useWindowDimensions,
 } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
 import type { LatLng, Camera, MapEvent } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo';
@@ -21,6 +21,7 @@ import type {
   Directions,
   StationsInfo,
   StationStatus,
+  Bounds,
 } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findAndUpdateNearDestinationStations } from './services/nearStations';
@@ -28,8 +29,9 @@ import DirectionsPolyline from './components/DirectionsPolyline';
 import TopPanel from './components/TopPanel';
 import DirectionsControls from './components/DirectionsControls';
 import getDirections from './services/directionsApi';
-import { getZoomGrade, getZoomLevel } from './services/getZoomLevel';
+import { getZoomLevel } from './services/getZoomLevel';
 
+const isZoomedInLevel = 15;
 const initialZoomLevel = 15;
 
 const initialCamera: Camera = {
@@ -60,7 +62,9 @@ type DirectionState =
 export default function MapScene() {
   const window = useWindowDimensions();
   const map = useRef<MapView | null>(null);
-  const zoomGrade = useRef<number>(getZoomGrade(initialZoomLevel));
+  const [zoomedInMapBounds, setZoomedInMapBounds] = useState<Bounds | null>(
+    null
+  );
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [myLocation, setMyLocation] = useState<LatLng | null>(null);
@@ -118,6 +122,21 @@ export default function MapScene() {
     [directionState, window, setDestination]
   );
 
+  const handleRegionChange = (region: Region) => {
+    const newZoomLevel = getZoomLevel(window.width, region.longitudeDelta);
+    const isZoomedIn = newZoomLevel >= isZoomedInLevel;
+    const isAlreadyZoomedIn = Boolean(zoomedInMapBounds);
+
+    if (isAlreadyZoomedIn !== isZoomedIn) {
+      // if transitioning from zoomed-out to zoomed-in
+      if (isAlreadyZoomedIn === false) {
+        map.current?.getMapBoundaries().then(setZoomedInMapBounds);
+        return;
+      }
+      setZoomedInMapBounds(null);
+    }
+  };
+
   const handleFindMyLocationPress = () => {
     if (!myLocation) return;
     map.current?.animateCamera({
@@ -154,8 +173,8 @@ export default function MapScene() {
       .then(directions => {
         map.current?.fitToCoordinates(
           [
-            directions.cycling[0].totalBounds.northeast,
-            directions.cycling[0].totalBounds.southwest,
+            directions.cycling[0].totalBounds.northEast,
+            directions.cycling[0].totalBounds.southWest,
           ],
           {
             edgePadding: {
@@ -192,18 +211,16 @@ export default function MapScene() {
         style={styles.map}
         onLongPress={handleMapLongPress}
         onPress={handleMapPress}
-        onRegionChangeComplete={region => {
-          const zoomLevel = getZoomLevel(window.width, region.longitudeDelta);
-          const newZoomGrade = getZoomGrade(zoomLevel);
-
-          if (newZoomGrade !== zoomGrade.current) {
-            zoomGrade.current = newZoomGrade;
-          }
-        }}
+        onRegionChange={handleRegionChange}
       >
         {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
-        {bikeStationsInfo && <StationMarkers data={bikeStationsInfo} />}
+        {bikeStationsInfo && (
+          <StationMarkers
+            data={bikeStationsInfo}
+            zoomedInBounds={zoomedInMapBounds}
+          />
+        )}
         {directionState?.directions && (
           <DirectionsPolyline directions={directionState.directions} />
         )}
