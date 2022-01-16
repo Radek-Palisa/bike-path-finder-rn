@@ -9,7 +9,7 @@ export type NearStation = {
   station: StationStatus;
 };
 
-export function mutateNearStations(
+function mutateNearStations(
   nearStations: NearStation[],
   maybeNearStation: NearStation
 ): NearStation[] {
@@ -20,40 +20,37 @@ export function mutateNearStations(
   return nearStations;
 }
 
-type FindNearStationsResult = {
-  updatedStationsInfo: StationsInfo | null;
-  nearStations: StationStatus[] | null;
+type Options = {
+  limitByAvailability?: 'docks' | 'bikesTotal';
 };
 
-export function findAndUpdateNearDestinationStations(
+export function findNearStations(
   stationsInfo: StationsInfo | null,
-  location: LatLng
-): FindNearStationsResult {
+  location: LatLng,
+  { limitByAvailability }: Options = {}
+): StationStatus[] | null {
   if (!stationsInfo) {
-    return {
-      updatedStationsInfo: null,
-      nearStations: null,
-    };
+    return null;
   }
 
   const nearStations: NearStation[] = [];
 
-  const updatedStationsInfo: [number, StationStatus][] = [...stationsInfo].map(
-    ([stationdId, station]) => {
-      const distance = calculateDistance(location, station.coordinate);
+  stationsInfo.forEach(station => {
+    const distance = calculateDistance(location, station.coordinate);
 
-      const hasAvailableDocks = station.availableDocks > 0;
+    let condition = true;
 
-      if (hasAvailableDocks) {
-        mutateNearStations(nearStations, { distance, station });
-      }
-
-      return [stationdId, station];
+    if (limitByAvailability === 'docks') {
+      condition = station.availableDocks > 0;
+    } else if (limitByAvailability === 'bikesTotal') {
+      condition =
+        station.availableMechanical > 0 || station.availableElectric > 0;
     }
-  );
 
-  return {
-    updatedStationsInfo: new Map(updatedStationsInfo),
-    nearStations: nearStations.map(({ station }) => station),
-  };
+    if (condition) {
+      mutateNearStations(nearStations, { distance, station });
+    }
+  });
+
+  return nearStations.map(({ station }) => station);
 }

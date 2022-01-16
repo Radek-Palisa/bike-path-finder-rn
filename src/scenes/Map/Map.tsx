@@ -24,7 +24,7 @@ import type {
   Bounds,
 } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
-import { findAndUpdateNearDestinationStations } from './services/nearStations';
+import { findNearStations } from './services/nearStations';
 import DirectionsPolyline from './components/DirectionsPolyline';
 import TopPanel from './components/TopPanel';
 import DirectionsControls from './components/DirectionsControls';
@@ -76,14 +76,18 @@ export default function MapScene() {
   );
 
   useEffect(() => {
-    const myLocation = getMyLocation().then(location => {
-      setMyLocation(location);
-      return location;
-    });
-    getBikeStationsInfo(myLocation)
-      .then(({ stationsInfo, nearStations }) => {
-        stationsNearOrigin.current = nearStations;
+    const myLocation = getMyLocation();
+    getBikeStationsInfo()
+      .then(stationsInfo => {
         setBikeStationsInfo(stationsInfo);
+        myLocation.then(location => {
+          if (!location) return;
+          setMyLocation(location);
+          const nearStations = findNearStations(stationsInfo, location, {
+            limitByAvailability: 'bikesTotal',
+          });
+          stationsNearOrigin.current = nearStations;
+        });
       })
       .catch(e => Alert.alert('Error', e.message));
   }, []);
@@ -91,13 +95,12 @@ export default function MapScene() {
   useEffect(() => {
     if (!destination) return;
 
-    setBikeStationsInfo(bikeStationsInfo => {
-      const { updatedStationsInfo, nearStations } =
-        findAndUpdateNearDestinationStations(bikeStationsInfo, destination);
-      stationsNearDestinaion.current = nearStations;
-      return updatedStationsInfo;
+    const nearStations = findNearStations(bikeStationsInfo, destination, {
+      limitByAvailability: 'docks',
     });
-  }, [destination, setBikeStationsInfo]);
+
+    stationsNearDestinaion.current = nearStations;
+  }, [destination]);
 
   const handleMapPress = useCallback(() => {
     if (directionState) return;
