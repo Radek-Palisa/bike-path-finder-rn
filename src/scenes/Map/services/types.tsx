@@ -40,6 +40,23 @@ export type StationStatus = {
   availableDocks: number;
 };
 
+export type DirectionState =
+  | {
+      originStation: StationStatus;
+      destinationStation: StationStatus;
+      params: DirectionParams;
+      state: 'loading';
+      directions: null;
+    }
+  | {
+      originStation: StationStatus;
+      destinationStation: StationStatus;
+      params: DirectionParams;
+      state: 'success';
+      directions: Directions;
+    }
+  | null;
+
 export type StationsInfo = Map<number, StationStatus>;
 
 export type BicingApiStationsInfoResponse = {

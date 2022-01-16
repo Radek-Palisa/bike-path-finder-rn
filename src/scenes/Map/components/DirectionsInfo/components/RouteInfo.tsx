@@ -1,17 +1,20 @@
 import { View, Text, StyleSheet } from 'react-native';
-import DirectionsBikeIcon from '../../../components/icons/DirectionsBikeIcon';
-import DirectionsWalkIcon from '../../../components/icons/DirectionsWalkIcon';
-import { Directions } from '../services/types';
+import DirectionsBikeIcon from '../../../../../components/icons/DirectionsBikeIcon';
+import DirectionsWalkIcon from '../../../../../components/icons/DirectionsWalkIcon';
+import type { Directions } from '../../../services/types';
 
 type Props = {
   directions: Directions | null;
 };
 
-export default function DirectionsInfo({ directions }: Props) {
-  if (!directions) return null;
+export default function RouteInfo({ directions }: Props) {
+  if (!directions) {
+    // TODO: loader
+    return null;
+  }
 
   return (
-    <View>
+    <>
       <View style={styles.directionsInfo}>
         <Text style={styles.duration}>
           {directions.cycling[0].totalDuration.text}
@@ -37,7 +40,7 @@ export default function DirectionsInfo({ directions }: Props) {
           {directions.walkingToDestination.duration?.text}
         </Text>
       </View>
-    </View>
+    </>
   );
 }
 

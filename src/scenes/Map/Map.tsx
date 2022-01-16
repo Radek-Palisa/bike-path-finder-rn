@@ -10,18 +10,17 @@ import {
 import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
 import type { LatLng, Camera, MapEvent } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
-import DirectionsInfo from './components/DirectionsInfo';
+import DirectionsInfo from './components/DirectionsInfo/DirectionsInfo';
 import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
 import getMyLocation from './services/getMyLocation';
 import MyLocationMarker from './components/MyLocationMarker';
 import StationMarkers from './components/StationMarkers';
 import type {
-  DirectionParams,
-  Directions,
   StationsInfo,
   StationStatus,
   Bounds,
+  DirectionState,
 } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findNearStations } from './services/nearStations';
@@ -45,19 +44,6 @@ const initialCamera: Camera = {
   heading: 0,
   altitude: 0,
 } as const;
-
-type DirectionState =
-  | {
-      params: DirectionParams;
-      state: 'loading';
-      directions: null;
-    }
-  | {
-      params: DirectionParams;
-      state: 'success';
-      directions: Directions;
-    }
-  | null;
 
 export default function MapScene() {
   const window = useWindowDimensions();
@@ -159,15 +145,24 @@ export default function MapScene() {
       return;
     }
 
+    const nearestStation = stationsNearOrigin.current[0];
+    const nearestDestinationStation = stationsNearDestinaion.current[0];
+
     const directionParams = {
       origin: myLocation,
-      originStation: stationsNearOrigin.current[0].coordinate,
+      originStation: nearestStation.coordinate,
       destination,
-      destinationStation: stationsNearDestinaion.current[0].coordinate,
+      destinationStation: nearestDestinationStation.coordinate,
+    };
+
+    const partialDirectionState = {
+      params: directionParams,
+      originStation: nearestStation,
+      destinationStation: nearestDestinationStation,
     };
 
     setDirectionState({
-      params: directionParams,
+      ...partialDirectionState,
       state: 'loading',
       directions: null,
     });
@@ -189,7 +184,7 @@ export default function MapScene() {
           }
         );
         setDirectionState({
-          params: directionParams,
+          ...partialDirectionState,
           state: 'success',
           directions,
         });
@@ -238,7 +233,7 @@ export default function MapScene() {
         }
         panelContent={
           directionState ? (
-            <DirectionsInfo directions={directionState.directions} />
+            <DirectionsInfo directionState={directionState} />
           ) : (
             <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
           )
