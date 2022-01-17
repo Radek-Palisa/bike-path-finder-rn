@@ -7,14 +7,17 @@ import {
   Alert,
   useWindowDimensions,
 } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
+import MapView, {
+  PROVIDER_GOOGLE,
+  Marker,
+  Region,
+  EventUserLocation,
+} from 'react-native-maps';
 import type { LatLng, Camera, MapEvent } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo/DirectionsInfo';
 import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
-import getMyLocation from './services/getMyLocation';
-import MyLocationMarker from './components/MyLocationMarker';
 import StationMarkers from './components/StationMarkers';
 import type {
   StationsInfo,
@@ -53,30 +56,39 @@ export default function MapScene() {
   );
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
-  const [myLocation, setMyLocation] = useState<LatLng | null>(null);
   const [directionState, setDirectionState] = useState<DirectionState>(null);
   const stationsNearOrigin = useRef<StationStatus[] | null>(null);
   const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
     null
   );
+  const [isInitialUserLocationKnown, setIsInitialUserLocationKnown] =
+    useState<boolean>(false);
+  const userLocation = useRef<LatLng | null>(null);
 
   useEffect(() => {
-    const myLocation = getMyLocation();
     getBikeStationsInfo()
-      .then(stationsInfo => {
-        setBikeStationsInfo(stationsInfo);
-        myLocation.then(location => {
-          if (!location) return;
-          setMyLocation(location);
-          const nearStations = findNearStations(stationsInfo, location, {
-            limitByAvailability: 'bikesTotal',
-          });
-          stationsNearOrigin.current = nearStations;
-        });
-      })
+      .then(setBikeStationsInfo)
       .catch(e => Alert.alert('Error', e.message));
   }, []);
+
+  useEffect(() => {
+    if (
+      !bikeStationsInfo ||
+      !isInitialUserLocationKnown ||
+      !userLocation.current
+    ) {
+      return;
+    }
+
+    stationsNearOrigin.current = findNearStations(
+      bikeStationsInfo,
+      userLocation.current,
+      {
+        limitByAvailability: 'bikesTotal',
+      }
+    );
+  }, [bikeStationsInfo, isInitialUserLocationKnown]);
 
   useEffect(() => {
     if (!destination) return;
@@ -111,6 +123,16 @@ export default function MapScene() {
     [directionState, window, setDestination]
   );
 
+  const handleUserLocationChange = useCallback(
+    ({ nativeEvent }: EventUserLocation) => {
+      if (!isInitialUserLocationKnown) {
+        setIsInitialUserLocationKnown(true);
+      }
+      userLocation.current = nativeEvent.coordinate;
+    },
+    [isInitialUserLocationKnown, setIsInitialUserLocationKnown]
+  );
+
   const handleRegionChange = (region: Region) => {
     const newZoomLevel = getZoomLevel(window.width, region.longitudeDelta);
     const isZoomedIn = newZoomLevel >= isZoomedInLevel;
@@ -127,16 +149,16 @@ export default function MapScene() {
   };
 
   const handleFindMyLocationPress = () => {
-    if (!myLocation) return;
+    if (!userLocation.current) return;
     map.current?.animateCamera({
-      center: myLocation,
+      center: userLocation.current,
       zoom: 16,
     });
   };
 
   const handleDirectionsPress = () => {
     if (
-      !myLocation ||
+      !userLocation.current ||
       !destination ||
       !stationsNearOrigin.current?.[0] ||
       !stationsNearDestinaion.current?.[0]
@@ -149,7 +171,7 @@ export default function MapScene() {
     const nearestDestinationStation = stationsNearDestinaion.current[0];
 
     const directionParams = {
-      origin: myLocation,
+      origin: userLocation.current,
       originStation: nearestStation.coordinate,
       destination,
       destinationStation: nearestDestinationStation.coordinate,
@@ -203,6 +225,7 @@ export default function MapScene() {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <MapView
+        showsUserLocation
         ref={map}
         initialCamera={initialCamera}
         provider={PROVIDER_GOOGLE}
@@ -210,8 +233,8 @@ export default function MapScene() {
         onLongPress={handleMapLongPress}
         onPress={handleMapPress}
         onRegionChange={handleRegionChange}
+        onUserLocationChange={handleUserLocationChange}
       >
-        {myLocation && <MyLocationMarker coordinate={myLocation} />}
         {destination && <Marker coordinate={destination} />}
         {bikeStationsInfo && (
           <StationMarkers

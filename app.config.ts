@@ -17,6 +17,10 @@ export default {
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: true,
+    infoPlist: {
+      NSLocationWhenInUseUsageDescription:
+        'The current position is necessary to be able to use the directions feature.',
+    },
   },
   android: {
     adaptiveIcon: {
