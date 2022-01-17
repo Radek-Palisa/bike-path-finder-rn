@@ -14,7 +14,7 @@ export default function RouteInfo({ directions }: Props) {
   }
 
   return (
-    <>
+    <View>
       <View style={styles.directionsInfo}>
         <Text style={styles.duration}>
           {directions.cycling[0].totalDuration.text}
@@ -40,7 +40,7 @@ export default function RouteInfo({ directions }: Props) {
           {directions.walkingToDestination.duration?.text}
         </Text>
       </View>
-    </>
+    </View>
   );
 }
 
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
   directionsInfo: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    paddingLeft: 10,
   },
   duration: {
     fontSize: 20,
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginTop: 10,
-    paddingLeft: 10,
   },
   durationBreakdownText: {
     color: 'gray',
