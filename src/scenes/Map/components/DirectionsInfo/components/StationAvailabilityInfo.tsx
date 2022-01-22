@@ -20,14 +20,14 @@ export default function StationAvailabilityInfo({
       <View style={styles.availabilityContainer}>
         <View style={styles.availableBikes}>
           <Text style={styles.availableBikesText}>
-            {originStation.availableElectric}{' '}
-          </Text>
-          <ElectricBikeRoundedIcon style={{ marginTop: 2 }} width={20} />
-          <Text style={styles.availableBikesText}>
-            {'  '}
             {originStation.availableMechanical}{' '}
           </Text>
           <PedalBikeRoundedIcon width={20} />
+          <Text style={styles.availableBikesText}>
+            {'  '}
+            {originStation.availableElectric}{' '}
+          </Text>
+          <ElectricBikeRoundedIcon style={{ marginTop: 2 }} width={20} />
         </View>
         <View style={styles.availableDocks}>
           <Text style={styles.availableDocksText}>
