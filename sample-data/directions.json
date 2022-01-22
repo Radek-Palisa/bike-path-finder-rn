@@ -170,7 +170,8 @@
           "latitude": 41.3985712,
           "longitude": 2.1974751
         }
-      }
+      },
+      "isSelected": true
     }
   ]
 }
