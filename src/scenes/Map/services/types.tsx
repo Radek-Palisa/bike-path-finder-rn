@@ -30,6 +30,7 @@ export type CyclingRoute = Route & {
   totalDistance: google.maps.Distance;
   totalDuration: google.maps.Duration;
   totalBounds: Bounds;
+  isSelected: boolean;
 };
 
 export type StationStatus = {

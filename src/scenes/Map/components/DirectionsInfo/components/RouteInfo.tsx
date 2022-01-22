@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import DirectionsBikeIcon from '../../../../../components/icons/DirectionsBikeIcon';
 import DirectionsWalkIcon from '../../../../../components/icons/DirectionsWalkIcon';
-import type { Directions } from '../../../services/types';
+import type { CyclingRoute, Directions } from '../../../services/types';
 
 type Props = {
   directions: Directions | null;
@@ -13,14 +13,16 @@ export default function RouteInfo({ directions }: Props) {
     return null;
   }
 
+  const selectedRoute = directions.cycling.find(
+    route => route.isSelected
+  ) as CyclingRoute;
+
   return (
     <View>
       <View style={styles.directionsInfo}>
-        <Text style={styles.duration}>
-          {directions.cycling[0].totalDuration.text}
-        </Text>
+        <Text style={styles.duration}>{selectedRoute.totalDuration.text}</Text>
         <Text style={styles.distance}>
-          ({directions.cycling[0].totalDistance.text})
+          ({selectedRoute.totalDistance.text})
         </Text>
       </View>
       <View style={styles.durationBreakdown}>
@@ -33,7 +35,7 @@ export default function RouteInfo({ directions }: Props) {
           style={styles.durationBreakdownBikeIcon}
         />
         <Text style={styles.durationBreakdownText}>
-          {directions.cycling[0].duration?.text}
+          {selectedRoute.duration?.text}
         </Text>
         <DirectionsWalkIcon width={20} />
         <Text style={styles.durationBreakdownText}>

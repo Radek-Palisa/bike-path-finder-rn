@@ -53,7 +53,7 @@ export default async function getDirections({
   return {
     walkingToStation: walkingToStationRoutes[0],
     walkingToDestination: walkingToDestinationRoutes[0],
-    cycling: cyclingRoutes.map(cyclingRoute => {
+    cycling: cyclingRoutes.map((cyclingRoute, index) => {
       const cyclingDistanceValue = cyclingRoute.distance?.value ?? 0;
       const cyclingDurationValue = cyclingRoute.duration?.value ?? 0;
 
@@ -69,6 +69,7 @@ export default async function getDirections({
 
       return {
         ...cyclingRoute,
+        isSelected: index === 0,
         totalDistance: {
           text: mapDistanceValueToText(totalDistanceValue),
           value: totalDistanceValue,
