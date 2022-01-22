@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   stationDotMarker: {
     width: 10,
     height: 10,
-    backgroundColor: 'red',
+    backgroundColor: '#DB504A',
     borderRadius: 10,
     borderWidth: 1,
     borderStyle: 'solid',
