@@ -199,9 +199,9 @@ export default function MapScene() {
           {
             edgePadding: {
               top: 150,
-              right: 15,
+              right: 25,
               bottom: 150,
-              left: 15,
+              left: 25,
             },
           }
         );
@@ -235,9 +235,9 @@ export default function MapScene() {
       {
         edgePadding: {
           top: 150,
-          right: 15,
+          right: 25,
           bottom: 150,
-          left: 15,
+          left: 25,
         },
       }
     );
