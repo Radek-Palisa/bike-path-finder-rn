@@ -221,6 +221,42 @@ export default function MapScene() {
     setDirectionState(null);
   };
 
+  const handleRouteSelect = (routeIndex: number) => {
+    if (!directionState?.directions) return;
+
+    const selectedRoute = directionState.directions.cycling[routeIndex];
+
+    // pan to the route bounds even if clicking on the already selected route
+    map.current?.fitToCoordinates(
+      [
+        selectedRoute.totalBounds.northEast,
+        selectedRoute.totalBounds.southWest,
+      ],
+      {
+        edgePadding: {
+          top: 150,
+          right: 15,
+          bottom: 150,
+          left: 15,
+        },
+      }
+    );
+
+    // i.e. if not already selected
+    if (!selectedRoute.isSelected) {
+      setDirectionState({
+        ...directionState,
+        directions: {
+          ...directionState.directions,
+          cycling: directionState.directions.cycling.map((route, index) => ({
+            ...route,
+            isSelected: index === routeIndex,
+          })),
+        },
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -247,7 +283,11 @@ export default function MapScene() {
         )}
       </MapView>
       <TopPanel isActivated={Boolean(directionState)}>
-        <DirectionsControls onDirectionsClearPress={handleDirectionsClear} />
+        <DirectionsControls
+          onDirectionsClearPress={handleDirectionsClear}
+          directions={directionState?.directions}
+          onRouteSelect={handleRouteSelect}
+        />
       </TopPanel>
       <BottomPanel
         isActivated={Boolean(destination)}
