@@ -15,13 +15,13 @@ export default memo(function DirectionsPolyline({ directions }: Props) {
         strokeColor="#669df6"
         lineDashPattern={[6, 6]}
       />
-      {directions.cycling.map((route, index) => (
+      {directions.cycling.map(({ polylineCoordinates, isSelected }, index) => (
         <Polyline
           key={index}
-          coordinates={route.polylineCoordinates}
+          coordinates={polylineCoordinates}
           strokeWidth={6}
-          strokeColor={index === 0 ? '#669df6' : '#bbbdbf'}
-          zIndex={index === 0 ? 1 : 0}
+          strokeColor={isSelected ? '#669df6' : '#bbbdbf'}
+          zIndex={isSelected ? 1 : 0}
         />
       ))}
       <Polyline

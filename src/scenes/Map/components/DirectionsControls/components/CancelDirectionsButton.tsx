@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import ChevronLeftIcon from '../../../components/icons/ChevronLeftIcon';
+import ChevronLeftIcon from '../../../../../components/icons/ChevronLeftIcon';
 
 type Props = {
   onPress: () => void;

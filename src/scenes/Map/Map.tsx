@@ -29,7 +29,7 @@ import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findNearStations } from './services/nearStations';
 import DirectionsPolyline from './components/DirectionsPolyline';
 import TopPanel from './components/TopPanel';
-import DirectionsControls from './components/DirectionsControls';
+import DirectionsControls from './components/DirectionsControls/DirectionsControls';
 import getDirections from './services/directionsApi';
 import { getZoomLevel } from './services/getZoomLevel';
 
