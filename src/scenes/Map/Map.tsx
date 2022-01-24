@@ -271,7 +271,13 @@ export default function MapScene() {
         onRegionChange={handleRegionChange}
         onUserLocationChange={handleUserLocationChange}
       >
-        {destination && <Marker coordinate={destination} />}
+        {destination && (
+          <Marker
+            // key is to prevent animation
+            key={`key=${destination.latitude}_${destination.longitude}`}
+            coordinate={destination}
+          />
+        )}
         {bikeStationsInfo && (
           <StationMarkers
             data={bikeStationsInfo}
