@@ -46,6 +46,7 @@ function mapBicingStationsInfo(
         availableMechanical: 0,
         availableElectric: 0,
         availableDocks: 0,
+        isSelected: false,
       },
     ])
   );

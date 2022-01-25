@@ -18,7 +18,9 @@ import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo/DirectionsInfo';
 import BottomPanel from './components/BottomPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
-import StationMarkers from './components/StationMarkers';
+import StationMarkers, {
+  StationMarkerProps,
+} from './components/StationMarkers';
 import type {
   StationsInfo,
   StationStatus,
@@ -32,6 +34,7 @@ import TopPanel from './components/TopPanel';
 import DirectionsControls from './components/DirectionsControls/DirectionsControls';
 import getDirections from './services/directionsApi';
 import { getZoomLevel } from './services/getZoomLevel';
+import StationBottomSheet from './components/StationBottomSheet';
 
 const isZoomedInLevel = 15;
 const initialZoomLevel = 14;
@@ -57,6 +60,9 @@ export default function MapScene() {
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [directionState, setDirectionState] = useState<DirectionState>(null);
+  const [tappedStation, setTappedStation] = useState<StationMarkerProps | null>(
+    null
+  );
   const stationsNearOrigin = useRef<StationStatus[] | null>(null);
   const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
@@ -100,10 +106,46 @@ export default function MapScene() {
     stationsNearDestinaion.current = nearStations;
   }, [destination]);
 
+  // find the tapped station in BikeStationsInfo and mark it as selected
+  useEffect(() => {
+    if (tappedStation) {
+      map.current?.animateCamera({
+        center: tappedStation.coordinate,
+      });
+    }
+
+    setBikeStationsInfo(prevState => {
+      if (!prevState) return prevState;
+
+      const shallowCopy = [...prevState];
+
+      if (!tappedStation) {
+        const index = shallowCopy.findIndex(([, { isSelected }]) => isSelected);
+
+        if (index === -1) {
+          return prevState;
+        }
+
+        shallowCopy[index][1].isSelected = false;
+        return new Map(shallowCopy);
+      }
+
+      const updated: [number, StationStatus][] = shallowCopy.map(
+        ([stationId, sta]) => {
+          sta.isSelected = stationId === tappedStation.stationId;
+          return [stationId, sta];
+        }
+      );
+
+      return new Map(updated);
+    });
+  }, [tappedStation, setBikeStationsInfo]);
+
   const handleMapPress = useCallback(() => {
+    setTappedStation(null);
     if (directionState) return;
     setDestination(null);
-  }, [directionState, setDestination]);
+  }, [directionState, setDestination, setTappedStation]);
 
   const handleMapLongPress = useCallback(
     (e: MapEvent) => {
@@ -131,6 +173,11 @@ export default function MapScene() {
       userLocation.current = nativeEvent.coordinate;
     },
     [isInitialUserLocationKnown, setIsInitialUserLocationKnown]
+  );
+
+  const handleClearStationSelection = useCallback(
+    () => setTappedStation(null),
+    [setTappedStation]
   );
 
   const handleRegionChange = (region: Region) => {
@@ -282,6 +329,7 @@ export default function MapScene() {
           <StationMarkers
             data={bikeStationsInfo}
             zoomedInBounds={zoomedInMapBounds}
+            onStationPress={setTappedStation}
           />
         )}
         {directionState?.directions && (
@@ -307,6 +355,10 @@ export default function MapScene() {
             <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
           )
         }
+      />
+      <StationBottomSheet
+        station={tappedStation}
+        onClose={handleClearStationSelection}
       />
     </View>
   );

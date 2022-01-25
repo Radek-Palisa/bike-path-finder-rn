@@ -39,6 +39,7 @@ export type StationStatus = {
   availableMechanical: number;
   availableElectric: number;
   availableDocks: number;
+  isSelected: boolean;
 };
 
 export type DirectionState =

@@ -5,11 +5,12 @@ import type { Bounds, StationsInfo, StationStatus } from '../services/types';
 import BikeStationIcon from '../../../components/icons/BikeStationIcon';
 import getStationAvailability from '../services/getStationAvailability/getStationAvailability';
 
-type StationMarkerProps = StationStatus & { stationId: number };
+export type StationMarkerProps = StationStatus & { stationId: number };
 
 type Props = {
   data: StationsInfo;
   zoomedInBounds: Bounds | null;
+  onStationPress: (station: StationMarkerProps) => void;
 };
 
 /**
@@ -18,7 +19,11 @@ type Props = {
  * TODO: implement more efficient marker rendering:
  * by either more gradual rendering or using PNG's.
  */
-export default function StationMarkers({ data, zoomedInBounds }: Props) {
+export default function StationMarkers({
+  data,
+  zoomedInBounds,
+  onStationPress,
+}: Props) {
   const [areOnScreenMarkersMounted, setAreOnScreenMarkersMounted] =
     useState(false);
   const stations = useMemo(() => {
@@ -54,9 +59,13 @@ export default function StationMarkers({ data, zoomedInBounds }: Props) {
       <StationCapacityMarkers
         stations={stations.onScreen}
         toggleMounted={setAreOnScreenMarkersMounted}
+        onStationPress={onStationPress}
       />
       {areOnScreenMarkersMounted && (
-        <StationCapacityMarkers stations={stations.offScreen} />
+        <StationCapacityMarkers
+          stations={stations.offScreen}
+          onStationPress={onStationPress}
+        />
       )}
     </>
   );
@@ -65,11 +74,13 @@ export default function StationMarkers({ data, zoomedInBounds }: Props) {
 type StationCapacityMarkersProps = {
   stations: Array<StationMarkerProps>;
   toggleMounted?: (isMounted: boolean) => void;
+  onStationPress: (station: StationMarkerProps) => void;
 };
 
 const StationCapacityMarkers = memo(function _StationCapacityMarkers({
   stations,
   toggleMounted,
+  onStationPress,
 }: StationCapacityMarkersProps) {
   useEffect(() => {
     if (toggleMounted) {
@@ -80,32 +91,34 @@ const StationCapacityMarkers = memo(function _StationCapacityMarkers({
 
   return (
     <>
-      {stations.map(
-        ({
+      {stations.map(station => {
+        const {
           stationId,
           availableMechanical,
           availableElectric,
           coordinate,
           capacity,
-        }) => {
-          const availableTotal = availableMechanical + availableElectric;
+          isSelected,
+        } = station;
 
-          return (
-            <Marker
-              key={`${stationId}-1`}
-              coordinate={coordinate}
-              tracksViewChanges={false}
-            >
-              <BikeStationIcon
-                fillPercentage={getStationAvailability(
-                  availableTotal,
-                  capacity
-                )}
-              />
-            </Marker>
-          );
-        }
-      )}
+        const availableTotal = availableMechanical + availableElectric;
+
+        return (
+          <Marker
+            key={`${stationId}-1${isSelected ? '-selected' : ''}`}
+            coordinate={coordinate}
+            tracksViewChanges={false}
+            stopPropagation
+            onPress={isSelected ? undefined : () => onStationPress(station)}
+          >
+            <BikeStationIcon
+              width={isSelected ? 40 : 34}
+              height={isSelected ? 54 : 46}
+              fillPercentage={getStationAvailability(availableTotal, capacity)}
+            />
+          </Marker>
+        );
+      })}
     </>
   );
 });

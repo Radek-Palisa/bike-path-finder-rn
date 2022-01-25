@@ -12,11 +12,17 @@ type Props = SvgProps & {
   fillPercentage: number;
 };
 
-export default function BikeStationIcon({ fillPercentage, ...props }: Props) {
+export default function BikeStationIcon({
+  width = 34,
+  height = 46,
+  fillPercentage,
+  ...props
+}: Props) {
   return (
     <Svg
-      width={34}
-      height={46}
+      width={width}
+      height={height}
+      viewBox="0 0 34 46"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
