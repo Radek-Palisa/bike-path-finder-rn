@@ -78,6 +78,10 @@ export default function MapScene() {
       .catch(e => Alert.alert('Error', e.message));
   }, []);
 
+  /**
+   * When BikeStationsInfo gets set, find the stations
+   * near the user's location.
+   */
   useEffect(() => {
     if (
       !bikeStationsInfo ||
@@ -96,6 +100,7 @@ export default function MapScene() {
     );
   }, [bikeStationsInfo, isInitialUserLocationKnown]);
 
+  /** when the destination gets set, find the nearby stations */
   useEffect(() => {
     if (!destination) return;
 
@@ -106,7 +111,7 @@ export default function MapScene() {
     stationsNearDestinaion.current = nearStations;
   }, [destination]);
 
-  // find the tapped station in BikeStationsInfo and mark it as selected
+  /** find the tapped station in BikeStationsInfo and mark it as selected */
   useEffect(() => {
     if (tappedStation) {
       map.current?.animateCamera({
