@@ -6,7 +6,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function TopPanel({ isActivated, children }: Props) {
+export default function TopSlideInPanel({ isActivated, children }: Props) {
   return (
     <SafeAreaView
       edges={['top', 'left', 'right']}

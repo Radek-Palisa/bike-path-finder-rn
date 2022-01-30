@@ -16,7 +16,7 @@ import MapView, {
 import type { LatLng, Camera, MapEvent } from 'react-native-maps';
 import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo/DirectionsInfo';
-import BottomPanel from './components/BottomPanel';
+import BottomSlideInPanel from './components/BottomSlideInPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
 import StationMarkers, {
   StationMarkerProps,
@@ -30,7 +30,7 @@ import type {
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import { findNearStations } from './services/nearStations';
 import DirectionsPolyline from './components/DirectionsPolyline';
-import TopPanel from './components/TopPanel';
+import TopSlideInPanel from './components/TopSlideInPanel';
 import DirectionsControls from './components/DirectionsControls/DirectionsControls';
 import getDirections from './services/directionsApi';
 import { getZoomLevel } from './services/getZoomLevel';
@@ -354,14 +354,14 @@ export default function MapScene() {
         )}
       </MapView>
       <RefreshDataButton onPress={handleResfreshData} />
-      <TopPanel isActivated={Boolean(directionState)}>
+      <TopSlideInPanel isActivated={Boolean(directionState)}>
         <DirectionsControls
           onDirectionsClearPress={handleDirectionsClear}
           directions={directionState?.directions}
           onRouteSelect={handleRouteSelect}
         />
-      </TopPanel>
-      <BottomPanel
+      </TopSlideInPanel>
+      <BottomSlideInPanel
         isActivated={Boolean(destination)}
         afloatContent={
           <FindMyLocationButton onPress={handleFindMyLocationPress} />

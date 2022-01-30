@@ -7,7 +7,7 @@ type Props = {
   panelContent: React.ReactNode;
 };
 
-export default function BottomPanel({
+export default function BottomSlideInPanel({
   isActivated,
   afloatContent,
   panelContent,
