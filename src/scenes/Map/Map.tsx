@@ -35,6 +35,7 @@ import DirectionsControls from './components/DirectionsControls/DirectionsContro
 import getDirections from './services/directionsApi';
 import { getZoomLevel } from './services/getZoomLevel';
 import StationBottomSheet from './components/StationBottomSheet';
+import RefreshDataButton from './components/RefreshDataButton';
 
 const isZoomedInLevel = 15;
 const initialZoomLevel = 14;
@@ -314,6 +315,12 @@ export default function MapScene() {
     }
   };
 
+  const handleResfreshData = () => {
+    getBikeStationsInfo()
+      .then(setBikeStationsInfo)
+      .catch(e => Alert.alert('Error', e.message));
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -346,6 +353,7 @@ export default function MapScene() {
           <DirectionsPolyline directions={directionState.directions} />
         )}
       </MapView>
+      <RefreshDataButton onPress={handleResfreshData} />
       <TopPanel isActivated={Boolean(directionState)}>
         <DirectionsControls
           onDirectionsClearPress={handleDirectionsClear}
