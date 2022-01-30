@@ -281,6 +281,8 @@ export default function MapScene() {
 
     const selectedRoute = directionState.directions.cycling[routeIndex];
 
+    handleClearStationSelection();
+
     // pan to the route bounds even if clicking on the already selected route
     map.current?.fitToCoordinates(
       [
