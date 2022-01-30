@@ -36,6 +36,8 @@ import getDirections from './services/directionsApi';
 import { getZoomLevel } from './services/getZoomLevel';
 import StationBottomSheet from './components/StationBottomSheet';
 import RefreshDataButton from './components/RefreshDataButton';
+import TopAfloat from './components/TopAfloat';
+import SearchBar from './components/SearchBar';
 
 const isZoomedInLevel = 15;
 const initialZoomLevel = 14;
@@ -353,7 +355,10 @@ export default function MapScene() {
           <DirectionsPolyline directions={directionState.directions} />
         )}
       </MapView>
-      <RefreshDataButton onPress={handleResfreshData} />
+      <TopAfloat>
+        <SearchBar />
+        <RefreshDataButton onPress={handleResfreshData} />
+      </TopAfloat>
       <TopSlideInPanel isActivated={Boolean(directionState)}>
         <DirectionsControls
           onDirectionsClearPress={handleDirectionsClear}
