@@ -71,6 +71,9 @@ export default function MapScene() {
   const [isInitialUserLocationKnown, setIsInitialUserLocationKnown] =
     useState<boolean>(false);
   const userLocation = useRef<LatLng | null>(null);
+  const [isEbikeDirections, setIsEbikeDirections] = useState<boolean | null>(
+    null
+  );
 
   useEffect(() => {
     getBikeStationsInfo()
@@ -95,10 +98,10 @@ export default function MapScene() {
       bikeStationsInfo,
       userLocation.current,
       {
-        limitByAvailability: 'bikesTotal',
+        limitByAvailability: isEbikeDirections ? 'bikesElectric' : 'bikesTotal',
       }
     );
-  }, [bikeStationsInfo, isInitialUserLocationKnown]);
+  }, [bikeStationsInfo, isInitialUserLocationKnown, isEbikeDirections]);
 
   /** when the destination gets set, find the nearby stations */
   useEffect(() => {
@@ -357,7 +360,11 @@ export default function MapScene() {
           directionState ? (
             <DirectionsInfo directionState={directionState} />
           ) : (
-            <DroppedPinMenu onDirectionsPress={handleDirectionsPress} />
+            <DroppedPinMenu
+              onDirectionsPress={handleDirectionsPress}
+              onSetEbikeDirections={setIsEbikeDirections}
+              isEbikeDirections={isEbikeDirections}
+            />
           )
         }
       />

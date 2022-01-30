@@ -21,7 +21,7 @@ function mutateNearStations(
 }
 
 type Options = {
-  limitByAvailability?: 'docks' | 'bikesTotal';
+  limitByAvailability?: 'docks' | 'bikesTotal' | 'bikesElectric';
 };
 
 export function findNearStations(
@@ -45,6 +45,8 @@ export function findNearStations(
     } else if (limitByAvailability === 'bikesTotal') {
       condition =
         station.availableMechanical > 0 || station.availableElectric > 0;
+    } else if (limitByAvailability === 'bikesElectric') {
+      condition = station.availableElectric > 0;
     }
 
     if (condition) {
