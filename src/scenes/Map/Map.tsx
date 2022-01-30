@@ -356,7 +356,7 @@ export default function MapScene() {
         )}
       </MapView>
       <TopAfloat>
-        <SearchBar />
+        <SearchBar destination={destination} />
         <RefreshDataButton onPress={handleResfreshData} />
       </TopAfloat>
       <TopSlideInPanel isActivated={Boolean(directionState)}>
