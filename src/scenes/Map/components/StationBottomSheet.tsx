@@ -1,12 +1,12 @@
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { StationMarkerProps } from './StationMarkers';
+import { ExtendedStationStatus } from '../services/types';
 
 const bottomSheetSnapPoints = ['25%'];
 
 type Props = {
-  station: StationMarkerProps | null;
+  station: ExtendedStationStatus | null;
   onClose: () => void;
 };
 

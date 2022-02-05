@@ -18,17 +18,19 @@ import DroppedPinMenu from './components/DroppedPinMenu';
 import DirectionsInfo from './components/DirectionsInfo/DirectionsInfo';
 import BottomSlideInPanel from './components/BottomSlideInPanel';
 import FindMyLocationButton from './components/FindMyLocationButton';
-import StationMarkers, {
-  StationMarkerProps,
-} from './components/StationMarkers';
+import StationMarkers from './components/StationMarkers';
 import type {
   StationsInfo,
   StationStatus,
   Bounds,
   DirectionState,
+  ExtendedStationStatus,
 } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
-import { findNearStations } from './services/nearStations';
+import {
+  areRouteStationsAvailable,
+  findNearStations,
+} from './services/nearStations';
 import DirectionsPolyline from './components/DirectionsPolyline';
 import TopSlideInPanel from './components/TopSlideInPanel';
 import DirectionsControls from './components/DirectionsControls/DirectionsControls';
@@ -63,11 +65,10 @@ export default function MapScene() {
   const getBikeStationsInfo = useGetBikeStationsInfo();
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [directionState, setDirectionState] = useState<DirectionState>(null);
-  const [tappedStation, setTappedStation] = useState<StationMarkerProps | null>(
-    null
-  );
-  const stationsNearOrigin = useRef<StationStatus[] | null>(null);
-  const stationsNearDestinaion = useRef<StationStatus[] | null>(null);
+  const [tappedStation, setTappedStation] =
+    useState<ExtendedStationStatus | null>(null);
+  const stationsNearOrigin = useRef<ExtendedStationStatus[] | null>(null);
+  const stationsNearDestinaion = useRef<ExtendedStationStatus[] | null>(null);
   const [bikeStationsInfo, setBikeStationsInfo] = useState<StationsInfo | null>(
     null
   );
@@ -317,9 +318,37 @@ export default function MapScene() {
     }
   };
 
-  const handleResfreshData = () => {
+  const handleRefreshData = () => {
     getBikeStationsInfo()
-      .then(setBikeStationsInfo)
+      .then(stationsInfo => {
+        if (directionState) {
+          const originStation = stationsInfo.get(
+            directionState.originStation.stationId
+          );
+          const destinationStation = stationsInfo.get(
+            directionState.destinationStation.stationId
+          );
+
+          const areStationsAvailable = areRouteStationsAvailable({
+            originStation,
+            destinationStation,
+          });
+
+          if (areStationsAvailable) {
+            // TODO: use a modal
+            Alert.alert(
+              'Hey there',
+              `It seems that the bicing stations on your route have changed their status.\n\n${JSON.stringify(
+                { originStation, destinationStation },
+                null,
+                4
+              )}`
+            );
+          }
+        }
+
+        setBikeStationsInfo(stationsInfo);
+      })
       .catch(e => Alert.alert('Error', e.message));
   };
 
@@ -357,7 +386,7 @@ export default function MapScene() {
       </MapView>
       <TopAfloat>
         <SearchBar destination={destination} />
-        <RefreshDataButton onPress={handleResfreshData} />
+        <RefreshDataButton onPress={handleRefreshData} />
       </TopAfloat>
       <TopSlideInPanel isActivated={Boolean(directionState)}>
         <DirectionsControls

@@ -42,17 +42,19 @@ export type StationStatus = {
   isSelected: boolean;
 };
 
+export type ExtendedStationStatus = StationStatus & { stationId: number };
+
 export type DirectionState =
   | {
-      originStation: StationStatus;
-      destinationStation: StationStatus;
+      originStation: ExtendedStationStatus;
+      destinationStation: ExtendedStationStatus;
       params: DirectionParams;
       state: 'loading';
       directions: null;
     }
   | {
-      originStation: StationStatus;
-      destinationStation: StationStatus;
+      originStation: ExtendedStationStatus;
+      destinationStation: ExtendedStationStatus;
       params: DirectionParams;
       state: 'success';
       directions: Directions;

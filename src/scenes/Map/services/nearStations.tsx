@@ -1,12 +1,12 @@
 import { LatLng } from 'react-native-maps';
 import calculateDistance from './calculateDistance';
-import { StationsInfo, StationStatus } from './types';
+import { ExtendedStationStatus, StationsInfo, StationStatus } from './types';
 
 const NEAR_STATIONS_LIMIT = 3;
 
 export type NearStation = {
   distance: number;
-  station: StationStatus;
+  station: ExtendedStationStatus;
 };
 
 function mutateNearStations(
@@ -28,14 +28,14 @@ export function findNearStations(
   stationsInfo: StationsInfo | null,
   location: LatLng,
   { limitByAvailability }: Options = {}
-): StationStatus[] | null {
+): ExtendedStationStatus[] | null {
   if (!stationsInfo) {
     return null;
   }
 
   const nearStations: NearStation[] = [];
 
-  stationsInfo.forEach(station => {
+  stationsInfo.forEach((station, stationId) => {
     const distance = calculateDistance(location, station.coordinate);
 
     let condition = true;
@@ -50,9 +50,40 @@ export function findNearStations(
     }
 
     if (condition) {
-      mutateNearStations(nearStations, { distance, station });
+      mutateNearStations(nearStations, {
+        distance,
+        station: { ...station, stationId },
+      });
     }
   });
 
   return nearStations.map(({ station }) => station);
+}
+
+type CheckStationsAvailabilityOptions = {
+  isEbikeDirections?: boolean;
+};
+
+export function areRouteStationsAvailable(
+  {
+    originStation,
+    destinationStation,
+  }: {
+    originStation?: StationStatus;
+    destinationStation?: StationStatus;
+  },
+  { isEbikeDirections }: CheckStationsAvailabilityOptions = {}
+): boolean {
+  const hasNoAvailableMechanical = originStation?.availableMechanical === 0;
+  const hasNoAvailableElectric = originStation?.availableElectric === 0;
+  const hasNoAvailableDocks = destinationStation?.availableDocks === 0;
+
+  if (
+    hasNoAvailableDocks ||
+    (isEbikeDirections ? hasNoAvailableElectric : hasNoAvailableMechanical)
+  ) {
+    return true;
+  }
+
+  return false;
 }

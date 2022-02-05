@@ -1,16 +1,18 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Marker } from 'react-native-maps';
-import type { Bounds, StationsInfo, StationStatus } from '../services/types';
+import type {
+  Bounds,
+  ExtendedStationStatus,
+  StationsInfo,
+} from '../services/types';
 import BikeStationIcon from '../../../components/icons/BikeStationIcon';
 import getStationAvailability from '../services/getStationAvailability/getStationAvailability';
-
-export type StationMarkerProps = StationStatus & { stationId: number };
 
 type Props = {
   data: StationsInfo;
   zoomedInBounds: Bounds | null;
-  onStationPress: (station: StationMarkerProps) => void;
+  onStationPress: (station: ExtendedStationStatus) => void;
 };
 
 /**
@@ -31,8 +33,8 @@ export default function StationMarkers({
       return { onScreen: [], offScreen: [] };
     }
 
-    const onScreen: StationMarkerProps[] = [];
-    const offScreen: StationMarkerProps[] = [];
+    const onScreen: ExtendedStationStatus[] = [];
+    const offScreen: ExtendedStationStatus[] = [];
 
     data.forEach((station, stationId) => {
       const { longitude, latitude } = station.coordinate;
@@ -72,9 +74,9 @@ export default function StationMarkers({
 }
 
 type StationCapacityMarkersProps = {
-  stations: Array<StationMarkerProps>;
+  stations: Array<ExtendedStationStatus>;
   toggleMounted?: (isMounted: boolean) => void;
-  onStationPress: (station: StationMarkerProps) => void;
+  onStationPress: (station: ExtendedStationStatus) => void;
 };
 
 const StationCapacityMarkers = memo(function _StationCapacityMarkers({
