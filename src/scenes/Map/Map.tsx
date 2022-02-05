@@ -386,15 +386,18 @@ export default function MapScene() {
       </MapView>
       <TopAfloat>
         <SearchBar destination={destination} />
-        <RefreshDataButton onPress={handleRefreshData} />
       </TopAfloat>
-      <TopSlideInPanel isActivated={Boolean(directionState)}>
-        <DirectionsControls
-          onDirectionsClearPress={handleDirectionsClear}
-          directions={directionState?.directions}
-          onRouteSelect={handleRouteSelect}
-        />
-      </TopSlideInPanel>
+      <TopSlideInPanel
+        isActivated={Boolean(directionState)}
+        afloatContent={<RefreshDataButton onPress={handleRefreshData} />}
+        panelContent={
+          <DirectionsControls
+            onDirectionsClearPress={handleDirectionsClear}
+            directions={directionState?.directions}
+            onRouteSelect={handleRouteSelect}
+          />
+        }
+      />
       <BottomSlideInPanel
         isActivated={Boolean(destination)}
         afloatContent={
