@@ -33,6 +33,7 @@ export default {
   },
   extra: {
     googleApiKey: process.env.GOOGLE_API_KEY,
+    googleOauthWebClientId: process.env.GOOGLE_OAUTH_WEB_CLIENT_ID,
     firebaseApiKey: process.env.FIREBASE_API_KEY,
     firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
     firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
