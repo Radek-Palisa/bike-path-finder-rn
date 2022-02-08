@@ -36,7 +36,8 @@
     "react-native-web": "0.17.5",
     "expo-auth-session": "~3.5.0",
     "expo-random": "~12.1.1",
-    "expo-web-browser": "~10.1.0"
+    "expo-web-browser": "~10.1.0",
+    "expo-apple-authentication": "~4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",

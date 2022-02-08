@@ -16,6 +16,7 @@ export default {
   },
   assetBundlePatterns: ['**/*'],
   ios: {
+    usesAppleSignIn: true,
     supportsTablet: true,
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
