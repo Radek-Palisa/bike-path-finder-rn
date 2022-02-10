@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, Alert, Dimensions } from 'react-native';
 import {
   AppleAuthenticationButton,
   AppleAuthenticationButtonType,
@@ -8,6 +8,8 @@ import {
 import useGoogleLogin from './services/googleLogin';
 import * as WebBrowser from 'expo-web-browser';
 import useAppleLogin from './services/appleLogin';
+import GoogleLoginButton from './components/GoogleLoginButton';
+import BikeStationIcon from '../../components/icons/BikeStationIcon';
 
 export default function SignIn() {
   const [isGoogleLoginDisabled, googleLoginPrompt] = useGoogleLogin();
@@ -35,25 +37,49 @@ export default function SignIn() {
   };
 
   return (
-    <View>
-      <Button
-        disabled={isGoogleLoginDisabled}
-        title="Google Login"
-        onPress={handleGoogleLogin}
-      />
-      {isAppleLoginAvailable && (
-        <AppleAuthenticationButton
-          buttonType={AppleAuthenticationButtonType.SIGN_IN}
-          buttonStyle={AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={5}
-          style={{
-            width: '100%',
-            height: 48,
-            marginTop: 16,
-          }}
-          onPress={handleAppleLogin}
+    <View style={styles.container}>
+      <BikeStationIcon width={74} height={100} fillPercentage={1} />
+      <Text style={styles.welcomeText}>Welcome</Text>
+      <View style={styles.buttonContainer}>
+        <GoogleLoginButton
+          isDisabled={isGoogleLoginDisabled}
+          onPress={handleGoogleLogin}
         />
-      )}
+        {isAppleLoginAvailable && (
+          <AppleAuthenticationButton
+            buttonType={AppleAuthenticationButtonType.CONTINUE}
+            buttonStyle={AppleAuthenticationButtonStyle.BLACK}
+            // buttonStyle={AppleAuthenticationButtonStyle.WHITE_OUTLINE}
+            cornerRadius={5}
+            style={{
+              width: '100%',
+              height: 48,
+              marginTop: 16,
+            }}
+            onPress={handleAppleLogin}
+          />
+        )}
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: Dimensions.get('window').height,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  welcomeText: {
+    paddingTop: 16,
+    fontSize: 18,
+  },
+  buttonContainer: {
+    maxWidth: 360,
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 70,
+  },
+});

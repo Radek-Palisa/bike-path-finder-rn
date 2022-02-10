@@ -54,7 +54,11 @@ export default function App() {
               component={Map}
             />
           ) : (
-            <Stack.Screen name="Sign In" component={SignIn} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Sign In"
+              component={SignIn}
+            />
           )}
         </Stack.Navigator>
       </NavigationContainer>
