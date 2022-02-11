@@ -15,36 +15,34 @@ type Props = {
 };
 
 export default function StationBottomSheet({
-  station,
+  station: _station,
   onClose,
   onDirectionsReroute,
 }: Props) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const isInitiliazed = useRef(false);
-  const isBeingClosedByTappingOutside = useRef(false);
+  const [station, setStation] = useState<ExtendedStationStatus | null>(
+    _station
+  );
 
   useEffect(() => {
-    if (!isInitiliazed.current) {
-      isInitiliazed.current = true;
-      return;
+    if (_station) {
+      setStation(_station);
+    } else {
+      bottomSheetRef.current?.close();
     }
+  }, [_station]);
 
+  useEffect(() => {
     if (station) {
-      return bottomSheetRef.current?.expand();
+      bottomSheetRef.current?.expand();
+    } else {
+      onClose();
     }
-
-    isBeingClosedByTappingOutside.current = true;
-    bottomSheetRef.current?.close();
   }, [station]);
 
   const handleChange = (index: number) => {
     if (index === -1) {
-      if (isBeingClosedByTappingOutside.current) {
-        isBeingClosedByTappingOutside.current = false;
-        return;
-      }
-      isInitiliazed.current = false;
-      onClose();
+      setStation(null);
     }
   };
 
