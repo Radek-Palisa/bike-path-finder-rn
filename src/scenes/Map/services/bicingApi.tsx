@@ -35,13 +35,14 @@ function mapBicingStationsInfo(
   rawData: BicingApiStationsInfoResponse
 ): StationsInfo {
   return new Map(
-    rawData.data.stations.map(({ station_id, capacity, lat, lon }) => [
+    rawData.data.stations.map(({ station_id, capacity, lat, lon, address }) => [
       station_id,
       {
         coordinate: {
           longitude: lon,
           latitude: lat,
         },
+        address,
         capacity,
         availableMechanical: 0,
         availableElectric: 0,
