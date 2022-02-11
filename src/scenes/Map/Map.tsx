@@ -25,6 +25,7 @@ import type {
   Bounds,
   DirectionState,
   ExtendedStationStatus,
+  DirectionParams,
 } from './services/types';
 import useGetBikeStationsInfo from './services/useGetBikeStationsInfo';
 import {
@@ -40,6 +41,7 @@ import StationBottomSheet from './components/StationBottomSheet';
 import RefreshDataButton from './components/RefreshDataButton';
 import TopAfloat from './components/TopAfloat';
 import SearchBar from './components/SearchBar';
+import calculateDistance from './services/calculateDistance';
 
 const isZoomedInLevel = 15;
 const initialZoomLevel = 14;
@@ -215,19 +217,104 @@ export default function MapScene() {
     });
   };
 
+  const setRoute = useCallback(
+    (partialDirectionState: {
+      params: DirectionParams;
+      originStation: ExtendedStationStatus;
+      destinationStation: ExtendedStationStatus;
+    }) => {
+      setDirectionState({
+        ...partialDirectionState,
+        state: 'loading',
+        directions: null,
+      });
+
+      getDirections(partialDirectionState.params)
+        .then(directions => {
+          map.current?.fitToCoordinates(
+            [
+              directions.cycling[0].totalBounds.northEast,
+              directions.cycling[0].totalBounds.southWest,
+            ],
+            {
+              edgePadding: {
+                top: 150,
+                right: 25,
+                bottom: 150,
+                left: 25,
+              },
+            }
+          );
+          setDirectionState({
+            ...partialDirectionState,
+            state: 'success',
+            directions,
+          });
+        })
+        .catch(error => {
+          setDirectionState(null);
+          Alert.alert('Error', error.message);
+        });
+    },
+    [setDirectionState]
+  );
+
+  const handleDirectionsReroute = (rerouteStation: ExtendedStationStatus) => {
+    if (!userLocation.current || !destination) {
+      Alert.alert('Error', 'Missing route parameters');
+      return;
+    }
+
+    const distanceToOrigin = calculateDistance(
+      rerouteStation.coordinate,
+      userLocation.current
+    );
+    const distanceToDest = calculateDistance(
+      rerouteStation.coordinate,
+      destination
+    );
+
+    const originStation =
+      distanceToOrigin <= distanceToDest
+        ? rerouteStation
+        : stationsNearOrigin.current?.[0];
+    const destinationStation =
+      distanceToOrigin > distanceToDest
+        ? rerouteStation
+        : stationsNearDestinaion.current?.[0];
+
+    if (!originStation || !destinationStation) {
+      Alert.alert('Error', 'Missing route parameters');
+      return;
+    }
+
+    const directionParams = {
+      origin: userLocation.current,
+      originStation: originStation.coordinate,
+      destinationStation: destinationStation.coordinate,
+      destination,
+    };
+
+    setRoute({
+      params: directionParams,
+      originStation,
+      destinationStation,
+    });
+  };
+
   const handleDirectionsPress = () => {
+    const nearestStation = stationsNearOrigin.current?.[0];
+    const nearestDestinationStation = stationsNearDestinaion.current?.[0];
+
     if (
       !userLocation.current ||
       !destination ||
-      !stationsNearOrigin.current?.[0] ||
-      !stationsNearDestinaion.current?.[0]
+      !nearestStation ||
+      !nearestDestinationStation
     ) {
       Alert.alert('Error', 'Missing direction parameters');
       return;
     }
-
-    const nearestStation = stationsNearOrigin.current[0];
-    const nearestDestinationStation = stationsNearDestinaion.current[0];
 
     const directionParams = {
       origin: userLocation.current,
@@ -236,44 +323,11 @@ export default function MapScene() {
       destinationStation: nearestDestinationStation.coordinate,
     };
 
-    const partialDirectionState = {
+    setRoute({
       params: directionParams,
       originStation: nearestStation,
       destinationStation: nearestDestinationStation,
-    };
-
-    setDirectionState({
-      ...partialDirectionState,
-      state: 'loading',
-      directions: null,
     });
-
-    getDirections(directionParams)
-      .then(directions => {
-        map.current?.fitToCoordinates(
-          [
-            directions.cycling[0].totalBounds.northEast,
-            directions.cycling[0].totalBounds.southWest,
-          ],
-          {
-            edgePadding: {
-              top: 150,
-              right: 25,
-              bottom: 150,
-              left: 25,
-            },
-          }
-        );
-        setDirectionState({
-          ...partialDirectionState,
-          state: 'success',
-          directions,
-        });
-      })
-      .catch(error => {
-        setDirectionState(null);
-        Alert.alert('Error', error.message);
-      });
   };
 
   const handleDirectionsClear = () => {
@@ -417,6 +471,9 @@ export default function MapScene() {
       />
       <StationBottomSheet
         station={tappedStation}
+        onDirectionsReroute={
+          directionState ? handleDirectionsReroute : undefined
+        }
         onClose={handleClearStationSelection}
       />
     </View>
