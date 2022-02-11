@@ -9,12 +9,15 @@ type Props = {
 export default function SearchBar({ destination }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.searchText}>
-        {destination &&
-          `${parseFloat(destination.latitude.toFixed(4))},${parseFloat(
+      {destination ? (
+        <Text style={styles.searchText}>
+          {`${parseFloat(destination.latitude.toFixed(4))},${parseFloat(
             destination.longitude.toFixed(4)
           )}`}
-      </Text>
+        </Text>
+      ) : (
+        <Text style={styles.placeholder}>Place a pin on the map</Text>
+      )}
       <UserAvatar />
     </View>
   );
@@ -38,5 +41,9 @@ const styles = StyleSheet.create({
   },
   searchText: {
     fontSize: 18,
+  },
+  placeholder: {
+    fontSize: 18,
+    color: '#919191',
   },
 });
