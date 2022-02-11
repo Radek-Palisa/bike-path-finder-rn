@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text } from 'react-native';
 import { LatLng } from 'react-native-maps';
+import UserAvatar from '../../../components/UserAvatar';
 
 type Props = {
   destination: LatLng | null;
@@ -14,6 +15,7 @@ export default function SearchBar({ destination }: Props) {
             destination.longitude.toFixed(4)
           )}`}
       </Text>
+      <UserAvatar />
     </View>
   );
 }
@@ -22,8 +24,11 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 50,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingLeft: 20,
+    paddingRight: 10,
     backgroundColor: '#fff',
     borderRadius: 50,
     elevation: 6,
